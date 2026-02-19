@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
+@import "tailwindcss";
+
+@import "tailwindcss";
+
+@theme {
+    --color-tomato: #C0392B;
+    --color-olive:  #3E7C59;
+    --color-cream:  #F4EFEA;
+
+    --font-heading: "Playfair Display", serif;
+    --font-body:    "Inter", sans-serif;
+}
+
+@theme {
+    --breakpoint-lg: 1024px;
+}
+
+@layer base {
+    body {
+        @apply bg-cream text-gray-800 font-body;
+    }
+}
+
+@utility tomato-bg {
+    background-color: var(--color-tomato);
+}
