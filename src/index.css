@@ -3,8 +3,7 @@
 
 :root {
     --color-background: #F4EFEA;
-    --color-text: #333333;
-    --color-primary: #C0392B;
+    --color-primary: #333333;
     --color-secondary: #3E7C59;
     --color-accent: #27AE60;
     --color-surface: rgba(255, 255, 255, 0.85);
@@ -23,8 +22,7 @@
 .dark {
     /* Dark mode */
     --color-background: #1a1a1a;
-    --color-text: #f4f4f4;
-    --color-primary: #E67E22;
+    --color-primary: #f4f4f4;
     --color-secondary: #27AE60;
     --color-accent: #F1C40F;
     --color-surface: rgba(30, 30, 30, 0.85);
@@ -36,10 +34,6 @@
 @layer utilities {
     .bg-background {
         background-color: var(--color-background);
-    }
-
-    .bg-primary {
-        background-color: var(--color-primary);
     }
 
     .bg-secondary {
@@ -56,10 +50,6 @@
 
     .text-background {
         color: var(--color-background);
-    }
-
-    .text-primary {
-        color: var(--color-primary);
     }
 
     .text-secondary {
@@ -85,7 +75,7 @@
 
 @layer base {
     body {
-        color: var(--color-text);
+        color: var(--color-primary);
         font-family: var(--font-body), serif;
         background-color: var(--color-background);
         position: relative;
@@ -139,7 +129,7 @@
 
     p, li, span, input, button {
         font-family: var(--font-body), sans-serif;
-        color: var(--color-text);
+        color: var(--color-primary);
     }
 }
 

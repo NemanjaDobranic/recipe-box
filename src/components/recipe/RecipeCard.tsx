@@ -58,8 +58,8 @@ export default function RecipeCard({recipe, selected = false, onSelect}: RecipeC
                 />
 
                 <div className="p-4 flex flex-col gap-2">
-                    <h3 className="text-lg font-heading text-text">{recipe.name}</h3>
-                    <p className="text-sm text-text-secondary">
+                    <h3 className="text-lg font-heading text-primary">{recipe.name}</h3>
+                    <p className="text-sm text-secondary">
                         {recipe.cuisine} • {recipe.difficulty}
                     </p>
 
