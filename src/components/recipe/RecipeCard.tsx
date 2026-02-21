@@ -4,7 +4,7 @@ import {useRecipeStore} from "@/features/recipes/store";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import type {Recipe} from "@/features/recipes/types";
 import {useToast} from "@/context/useToast.ts";
-import {FiEdit, FiTrash2, FiShoppingCart} from "react-icons/fi";
+import {FiEdit, FiTrash2, FiShoppingCart, FiCheck} from "react-icons/fi";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import {LazyLoadImage} from 'react-lazy-load-image-component';
 
@@ -75,16 +75,18 @@ export default function RecipeCard({recipe, selected = false, onSelect}: RecipeC
 
                         <button
                             onClick={handleToggleSelection}
-                            className={`flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md transition
-                                ${selected
-                                ? "bg-background text-text-secondary hover:bg-background/90"
-                                : "bg-accent text-background hover:bg-accent/90"
+                            className={`flex items-center px-4 py-2 rounded-lg font-medium transition hover:opacity-80  ${
+                                selected
+                                    ? "cursor-not-allowed bg-surface"
+                                    : "hover:shadow-md bg-secondary"
                             }`}
-                            style={{minWidth: "110px"}}
                             title={selected ? "Selected" : "Add to Shopping"}
                         >
-                            <FiShoppingCart size={18}/>
-                            <span className="hidden sm:inline">{selected ? "Selected" : "Add"}</span>
+                            {selected ? (
+                                <FiCheck size={18}/>
+                            ) : (
+                                <FiShoppingCart size={18}/>
+                            )}
                         </button>
 
                         <button

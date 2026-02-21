@@ -1,10 +1,11 @@
 import {useState, useMemo, useEffect} from "react";
-import { useNavigate } from "react-router-dom";
-import { useRecipeStore, useShoppingStore } from "@/features/recipes/store";
+import {useNavigate} from "react-router-dom";
+import {useRecipeStore, useShoppingStore} from "@/features/recipes/store";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeFilters from "@/components/recipe/RecipeFilters";
-import type { SortOptions } from "@/components/recipe/RecipeFilters";
+import type {SortOptions} from "@/components/recipe/RecipeFilters";
 import debounce from "lodash.debounce";
+import {FaPlus, FaShoppingCart} from "react-icons/fa";
 
 export default function HomePage() {
     const navigate = useNavigate();
@@ -70,10 +71,11 @@ export default function HomePage() {
             case "time":
                 result.sort((a, b) => a.prepTime + a.cookTime - (b.prepTime + b.cookTime));
                 break;
-            case "difficulty":
-                { const difficultyOrder = { Easy: 0, Medium: 1, Hard: 2 };
+            case "difficulty": {
+                const difficultyOrder = {Easy: 0, Medium: 1, Hard: 2};
                 result.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
-                break; }
+                break;
+            }
             case "favorites":
                 result.sort((a, b) => Number(b.isFavorite) - Number(a.isFavorite));
                 break;
@@ -85,22 +87,29 @@ export default function HomePage() {
     return (
         <div className="p-4 max-w-6xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-                <h1 className="text-3xl font-heading">Your Mediterranean Recipe Box</h1>
-                <div className="flex gap-2">
+                <div className="flex gap-3 flex-wrap">
                     <button
                         onClick={() => navigate("/create")}
-                        className="bg-tomato text-white px-5 py-2 rounded-lg font-medium hover:opacity-90 transition"
+                        className="bg-secondary flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium
+               hover:opacity-90 hover:shadow-md transition focus:outline-none focus:ring-2 focus:ring-offset-1
+               focus:ring-primary dark:focus:ring-accent"
+                        title="Create Recipe"
                     >
-                        + Create Recipe
+                        <FaPlus className="w-4 h-4 text-current"/>
+                        <span>Create Recipe</span>
                     </button>
+
                     <button
                         onClick={() => navigate("/shopping-list")}
                         disabled={selectedRecipes.length === 0}
-                        className={`px-5 py-2 rounded-lg font-medium transition ${
-                            selectedRecipes.length === 0 ? "bg-gray-300 cursor-not-allowed" : "bg-olive text-white hover:opacity-90"
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition hover:opacity-80  ${
+                            selectedRecipes.length === 0
+                                ? "cursor-not-allowed bg-surface"
+                                : "hover:shadow-md bg-secondary"
                         }`}
                     >
-                        Go to Shopping List ({selectedRecipes.length})
+                        <FaShoppingCart/>
+                        <span>Cart ({selectedRecipes.length})</span>
                     </button>
                 </div>
             </div>
@@ -137,9 +146,15 @@ export default function HomePage() {
             </div>
 
             {filteredRecipes.length === 0 && (
-                <p className="text-gray-500 mt-6 text-center">
-                    No recipes found. Try another search or adjust filters.
-                </p>
+                <div className="mt-6 text-center">
+                    <p className="text-gray-500 dark:text-gray-400 text-lg">
+                        🍳 No recipes found. Try another search or adjust filters.
+                    </p>
+                    <p className="text-gray-400 dark:text-gray-500 mt-2 text-sm">
+                        You can create a new recipe using the <span
+                        className="font-semibold">+ Create Recipe</span> button above.
+                    </p>
+                </div>
             )}
         </div>
     );
