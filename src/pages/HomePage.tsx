@@ -1,9 +1,11 @@
 import {useState, useMemo} from "react";
+import {useNavigate} from "react-router-dom";
 import {useRecipeStore} from "@/features/recipes/store";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeFilters from "@/components/recipe/RecipeFilters";
 
 export default function HomePage() {
+    const navigate = useNavigate();
     const recipes = useRecipeStore((s) => s.recipes);
 
     const [search, setSearch] = useState("");
@@ -24,21 +26,41 @@ export default function HomePage() {
             );
         }
 
-        if (cuisine !== "all") result = result.filter((r) => r.cuisine === cuisine);
+        if (cuisine !== "all")
+            result = result.filter((r) => r.cuisine === cuisine);
+
         if (difficulty !== "all")
-            result = result.filter((r) => r.difficulty.toLowerCase() === difficulty.toLowerCase());
-        if (favoritesOnly) result = result.filter((r) => r.isFavorite);
+            result = result.filter(
+                (r) =>
+                    r.difficulty.toLowerCase() === difficulty.toLowerCase()
+            );
+
+        if (favoritesOnly)
+            result = result.filter((r) => r.isFavorite);
 
         return result;
     }, [recipes, search, cuisine, difficulty, favoritesOnly]);
 
-    const cuisines = ["all", ...Array.from(new Set(recipes.map((r) => r.cuisine)))];
+    const cuisines = [
+        "all",
+        ...Array.from(new Set(recipes.map((r) => r.cuisine))),
+    ];
 
     return (
         <div className="p-4 max-w-6xl mx-auto">
-            <h1 className="text-3xl font-heading mb-6">
-                Your Mediterranean Recipe Box
-            </h1>
+
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+                <h1 className="text-3xl font-heading">
+                    Your Mediterranean Recipe Box
+                </h1>
+
+                <button
+                    onClick={() => navigate("/create")}
+                    className="bg-tomato text-white px-5 py-2 rounded-lg font-medium hover:opacity-90 transition"
+                >
+                    + Create Recipe
+                </button>
+            </div>
 
             <RecipeFilters
                 search={search}
