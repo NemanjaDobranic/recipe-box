@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.2.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
+    "lodash.debounce": "^4.0.8",
     "match-sorter": "^8.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
