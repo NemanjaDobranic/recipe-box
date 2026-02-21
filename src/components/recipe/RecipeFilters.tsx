@@ -1,9 +1,14 @@
-import type { FC } from "react";
-import Select from "react-select";
-import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import type {FC} from "react";
+import {useMemo} from "react";
+import {useNavigate} from "react-router-dom";
+import {ThemedSelect} from "@/components/ui/ThemedSelect";
 
 type SortOptions = "recent" | "time" | "difficulty" | "favorites";
+
+interface Option {
+    value: string;
+    label: string;
+}
 
 interface RecipeFiltersProps {
     recipes: { id: string; name: string }[];
@@ -46,7 +51,7 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
                                                }) => {
     const navigate = useNavigate();
 
-    const recipeOptions = useMemo(
+    const recipeOptions = useMemo<Option[]>(
         () =>
             recipes.map((r) => ({
                 value: r.id,
@@ -55,55 +60,114 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
         [recipes]
     );
 
+    const cuisineOptions: Option[] = availableCuisines.map((c) => ({
+        value: c,
+        label: c === "all" ? "All Cuisines" : c,
+    }));
+
+    const difficultyOptions: Option[] = [
+        {value: "all", label: "All Difficulties"},
+        {value: "Easy", label: "Easy"},
+        {value: "Medium", label: "Medium"},
+        {value: "Hard", label: "Hard"},
+    ];
+
+    const sortOptions: Option[] = [
+        {value: "recent", label: "Recently Added"},
+        {value: "time", label: "Cooking Time"},
+        {value: "difficulty", label: "Difficulty"},
+        {value: "favorites", label: "Favorites"},
+    ];
+
+    const tagOptions: Option[] = availableTags.map((t) => ({
+        value: t,
+        label: t,
+    }));
+
+    const activeFiltersCount =
+        (cuisine !== "all" ? 1 : 0) +
+        (difficulty !== "all" ? 1 : 0) +
+        (favoritesOnly ? 1 : 0) +
+        (maxTime ? 1 : 0) +
+        (tags.length ? 1 : 0);
+
+    const clearFilters = () => {
+        setCuisine("all");
+        setDifficulty("all");
+        setFavoritesOnly(false);
+        setMaxTime(null);
+        setTags([]);
+        setSortBy("recent");
+    };
+
     return (
-        <div className="mb-6 space-y-4">
-            <Select
-                options={recipeOptions}
-                onChange={(selected) => {
-                    if (selected) {
-                        navigate(`/recipe/${selected.value}`);
+        <div className="surface mb-8 animate-fade-in-up">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                    <h3 className="text-cooking-lg font-heading">
+                        Filter & Sort
+                    </h3>
+
+                    {activeFiltersCount > 0 && (
+                        <span className="badge bg-accent text-background animate-pulse">
+              {activeFiltersCount} active
+            </span>
+                    )}
+                </div>
+
+                <button
+                    onClick={clearFilters}
+                    className="text-sm text-secondary hover:text-accent transition"
+                >
+                    Clear filters
+                </button>
+            </div>
+
+            <div className="mb-6">
+                <ThemedSelect<Option>
+                    options={recipeOptions}
+                    value={null}
+                    inputValue={search}
+                    onInputChange={(input) => setSearch(input)}
+                    onChange={(selected) => {
+                        if (selected) {
+                            navigate(`/recipe/${selected.value}`);
+                        }
+                    }}
+                    isClearable
+                    placeholder="Search recipes by name..."
+                />
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <ThemedSelect<Option>
+                    options={cuisineOptions}
+                    value={
+                        cuisineOptions.find((opt) => opt.value === cuisine) || null
                     }
-                }}
-                onInputChange={(input) => setSearch(input)}
-                inputValue={search}
-                isClearable
-                placeholder="Search recipes..."
-                className="text-sm"
-            />
+                    onChange={(selected) =>
+                        setCuisine(selected?.value || "all")
+                    }
+                />
 
-            <div className="flex flex-wrap gap-4 items-center">
-                <select
-                    value={cuisine}
-                    onChange={(e) => setCuisine(e.target.value)}
-                    className="p-2 rounded-md border"
+                <ThemedSelect<Option>
+                    options={difficultyOptions}
+                    value={
+                        difficultyOptions.find(
+                            (opt) => opt.value === difficulty
+                        ) || null
+                    }
+                    onChange={(selected) =>
+                        setDifficulty(selected?.value || "all")
+                    }
+                />
+
+                <button
+                    onClick={() => setFavoritesOnly(!favoritesOnly)}
+                    className={`themed-button ${favoritesOnly ? "active" : ""}`}
                 >
-                    {availableCuisines.map((c) => (
-                        <option key={c} value={c}>
-                            {c === "all" ? "All Cuisines" : c}
-                        </option>
-                    ))}
-                </select>
-
-                <select
-                    value={difficulty}
-                    onChange={(e) => setDifficulty(e.target.value)}
-                    className="p-2 rounded-md border"
-                >
-                    <option value="all">All Difficulties</option>
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                </select>
-
-                <label className="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        checked={favoritesOnly}
-                        onChange={() => setFavoritesOnly(!favoritesOnly)}
-                        className="accent-red-500"
-                    />
-                    Favorites Only
-                </label>
+                    ❤️ Favorites
+                </button>
 
                 <input
                     type="number"
@@ -111,36 +175,35 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
                     placeholder="Max cooking time (min)"
                     value={maxTime ?? ""}
                     onChange={(e) => setMaxTime(e.target.value ? Number(e.target.value) : null)}
-                    className="w-48 p-2 rounded-md border"
+                    className="themed-input"
                 />
 
-                {/* Tags filter */}
-                <div className="w-64">
-                    <Select
-                        isMulti
-                        options={availableTags.map((t) => ({ value: t, label: t }))}
-                        value={tags.map((t) => ({ value: t, label: t }))}
-                        onChange={(selected) => setTags(selected.map((s) => s.value))}
-                        placeholder="Filter by tags..."
-                        className="text-sm"
-                    />
-                </div>
+                <ThemedSelect<Option, true>
+                    isMulti
+                    options={tagOptions}
+                    value={tagOptions.filter((opt) =>
+                        tags.includes(opt.value)
+                    )}
+                    onChange={(selected) =>
+                        setTags(selected.map((s) => s.value))
+                    }
+                    placeholder="Filter by tags..."
+                />
 
-
-                <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as SortOptions)}
-                    className="p-2 rounded-md border"
-                >
-                    <option value="recent">Recently Added</option>
-                    <option value="time">Cooking Time</option>
-                    <option value="difficulty">Difficulty</option>
-                    <option value="favorites">Favorites</option>
-                </select>
+                <ThemedSelect<Option>
+                    options={sortOptions}
+                    value={
+                        sortOptions.find((opt) => opt.value === sortBy) ||
+                        null
+                    }
+                    onChange={(selected) =>
+                        setSortBy(selected?.value as SortOptions)
+                    }
+                />
             </div>
         </div>
     );
 };
 
 export default RecipeFilters;
-export type { SortOptions };
+export type {SortOptions};
