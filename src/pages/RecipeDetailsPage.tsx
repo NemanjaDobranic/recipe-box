@@ -77,13 +77,34 @@ export default function RecipeDetailsPage() {
                     <span>🔥 {recipe.difficulty}</span>
                     <span>
             Servings:
-            <input
-                type="number"
-                min={1}
-                value={servings}
-                onChange={(e) => setServings(Number(e.target.value))}
-                className="w-16 ml-1 p-1 border rounded"
-            />
+            <div className="flex items-center gap-2 ml-2">
+              <button
+                  onClick={() => setServings((prev) => Math.max(1, prev - 1))}
+                  className="px-3 py-1 bg-gray-200 rounded-lg text-lg"
+              >
+                −
+              </button>
+
+              <span className="min-w-[40px] text-center font-semibold text-lg">
+                {servings}
+              </span>
+
+              <button
+                  onClick={() => setServings((prev) => prev + 1)}
+                  className="px-3 py-1 bg-gray-200 rounded-lg text-lg"
+              >
+                +
+              </button>
+
+                            {servings !== recipe.servings && (
+                                <button
+                                    onClick={() => setServings(recipe.servings)}
+                                    className="text-sm text-gray-500 underline ml-2"
+                                >
+                                    Reset
+                                </button>
+                            )}
+            </div>
           </span>
                 </div>
 
