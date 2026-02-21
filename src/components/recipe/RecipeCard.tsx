@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecipeStore } from "@/features/recipes/store";
+import { useRecipeStore, useShoppingStore } from "@/features/recipes/store";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { Recipe } from "@/features/recipes/types";
-import {useToast} from "@/context/useToast.ts";
+import { useToast } from "@/context/useToast.ts";
 
 export default function RecipeCard({ recipe }: { recipe: Recipe }) {
     const navigate = useNavigate();
     const deleteRecipe = useRecipeStore((s) => s.deleteRecipe);
     const { showToast } = useToast();
+
+    const selectedRecipes = useShoppingStore((s) => s.selectedRecipes);
+    const toggleRecipeSelection = useShoppingStore((s) => s.toggleRecipeSelection);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -16,6 +19,17 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
         deleteRecipe(recipe.id);
         showToast("Recipe deleted successfully");
         setIsModalOpen(false);
+    };
+
+    const isSelected = selectedRecipes.includes(recipe.id);
+
+    const handleToggleSelection = () => {
+        toggleRecipeSelection(recipe.id);
+        showToast(
+            isSelected
+                ? `"${recipe.name}" removed from shopping selection`
+                : `"${recipe.name}" added to shopping selection`
+        );
     };
 
     return (
@@ -54,6 +68,16 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
                             className="text-red-600 font-medium"
                         >
                             Delete
+                        </button>
+
+                        {/* Shopping List Selection */}
+                        <button
+                            onClick={handleToggleSelection}
+                            className={`font-medium ${
+                                isSelected ? "text-gray-500" : "text-green-600"
+                            }`}
+                        >
+                            {isSelected ? "Selected" : "Add to Shopping"}
                         </button>
                     </div>
                 </div>
