@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useRecipeStore } from "@/features/recipes/store";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {useRecipeStore} from "@/features/recipes/store";
 import ConfirmModal from "@/components/ui/ConfirmModal";
-import type { Recipe } from "@/features/recipes/types";
-import { useToast } from "@/context/useToast.ts";
+import type {Recipe} from "@/features/recipes/types";
+import {useToast} from "@/context/useToast.ts";
+import {FiEdit, FiTrash2, FiShoppingCart} from "react-icons/fi";
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import {LazyLoadImage} from 'react-lazy-load-image-component';
 
 interface RecipeCardProps {
     recipe: Recipe;
@@ -11,11 +14,10 @@ interface RecipeCardProps {
     onSelect?: () => void;
 }
 
-export default function RecipeCard({ recipe, selected = false, onSelect }: RecipeCardProps) {
+export default function RecipeCard({recipe, selected = false, onSelect}: RecipeCardProps) {
     const navigate = useNavigate();
     const deleteRecipe = useRecipeStore((s) => s.deleteRecipe);
-    const { showToast } = useToast();
-
+    const {showToast} = useToast();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleDelete = () => {
@@ -24,7 +26,8 @@ export default function RecipeCard({ recipe, selected = false, onSelect }: Recip
         setIsModalOpen(false);
     };
 
-    const handleToggleSelection = () => {
+    const handleToggleSelection = (e: React.MouseEvent) => {
+        e.stopPropagation();
         if (onSelect) {
             onSelect();
             showToast(
@@ -35,49 +38,62 @@ export default function RecipeCard({ recipe, selected = false, onSelect }: Recip
         }
     };
 
+    const handleEdit = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        navigate(`/edit/${recipe.id}`);
+    };
+
     return (
         <>
-            <div className="bg-white rounded-xl shadow p-4 hover:shadow-lg transition relative">
-                <img
+            <div
+                onClick={() => navigate(`/recipe/${recipe.id}`)}
+                className="bg-surface rounded-xl shadow-md hover:shadow-lg transition relative overflow-hidden cursor-pointer flex flex-col"
+            >
+                <LazyLoadImage
                     src={recipe.image}
                     alt={recipe.name}
+                    effect="blur"
+                    placeholderSrc="/assets/images/placeholder.png"
                     className="h-40 w-full object-cover rounded-lg mb-3"
                 />
 
-                <h3 className="text-lg font-semibold mb-1">{recipe.name}</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                    {recipe.cuisine} • {recipe.difficulty}
-                </p>
+                <div className="p-4 flex flex-col gap-2">
+                    <h3 className="text-lg font-heading text-text">{recipe.name}</h3>
+                    <p className="text-sm text-text-secondary">
+                        {recipe.cuisine} • {recipe.difficulty}
+                    </p>
 
-                <div className="flex justify-between items-center">
-                    <button
-                        onClick={() => navigate(`/recipe/${recipe.id}`)}
-                        className="text-olive font-medium"
-                    >
-                        View
-                    </button>
-
-                    <div className="flex gap-3">
+                    <div className="mt-3 flex flex-col sm:flex-row sm:justify-between gap-2">
+                        {/* Full-width buttons on mobile */}
                         <button
-                            onClick={() => navigate(`/edit/${recipe.id}`)}
-                            className="text-blue-600 font-medium"
+                            onClick={handleEdit}
+                            className="flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md text-secondary hover:bg-secondary/10 transition"
+                            title="Edit"
                         >
-                            Edit
+                            <FiEdit size={18}/> Edit
                         </button>
 
                         <button
-                            onClick={() => setIsModalOpen(true)}
-                            className="text-red-600 font-medium"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsModalOpen(true);
+                            }}
+                            className="flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md text-accent hover:bg-accent/10 transition"
+                            title="Delete"
                         >
-                            Delete
+                            <FiTrash2 size={18}/> Delete
                         </button>
 
-                        {/* Shopping List Selection */}
                         <button
                             onClick={handleToggleSelection}
-                            className={`font-medium ${selected ? "text-gray-500" : "text-green-600"}`}
+                            className={`flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md transition ${
+                                selected
+                                    ? "bg-background text-text-secondary hover:bg-background/90"
+                                    : "bg-accent text-background hover:bg-accent/90"
+                            }`}
+                            title={selected ? "Selected" : "Add to Shopping"}
                         >
-                            {selected ? "Selected" : "Add to Shopping"}
+                            <FiShoppingCart size={18}/> {selected ? "Selected" : "Add"}
                         </button>
                     </div>
                 </div>
