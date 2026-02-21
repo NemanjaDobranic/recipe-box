@@ -1,37 +1,71 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecipeStore } from "@/features/recipes/store";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { Recipe } from "@/features/recipes/types";
+import {useToast} from "@/context/useToast.ts";
 
 export default function RecipeCard({ recipe }: { recipe: Recipe }) {
     const navigate = useNavigate();
+    const deleteRecipe = useRecipeStore((s) => s.deleteRecipe);
+    const { showToast } = useToast();
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleDelete = () => {
+        deleteRecipe(recipe.id);
+        showToast("Recipe deleted successfully");
+        setIsModalOpen(false);
+    };
 
     return (
-        <div className="bg-white rounded-xl shadow p-4 hover:shadow-lg transition">
-            <img
-                src={recipe.image}
-                alt={recipe.name}
-                className="h-40 w-full object-cover rounded-lg mb-3"
-            />
+        <>
+            <div className="bg-white rounded-xl shadow p-4 hover:shadow-lg transition relative">
+                <img
+                    src={recipe.image}
+                    alt={recipe.name}
+                    className="h-40 w-full object-cover rounded-lg mb-3"
+                />
 
-            <h3 className="text-lg font-semibold mb-1">{recipe.name}</h3>
-            <p className="text-sm text-gray-600 mb-3">
-                {recipe.cuisine} • {recipe.difficulty}
-            </p>
+                <h3 className="text-lg font-semibold mb-1">{recipe.name}</h3>
 
-            <div className="flex justify-between">
-                <button
-                    onClick={() => navigate(`/recipe/${recipe.id}`)}
-                    className="text-olive font-medium"
-                >
-                    View
-                </button>
+                <p className="text-sm text-gray-600 mb-3">
+                    {recipe.cuisine} • {recipe.difficulty}
+                </p>
 
-                <button
-                    onClick={() => navigate(`/edit/${recipe.id}`)}
-                    className="text-tomato font-medium"
-                >
-                    Edit
-                </button>
+                <div className="flex justify-between items-center">
+                    <button
+                        onClick={() => navigate(`/recipe/${recipe.id}`)}
+                        className="text-olive font-medium"
+                    >
+                        View
+                    </button>
+
+                    <div className="flex gap-3">
+                        <button
+                            onClick={() => navigate(`/edit/${recipe.id}`)}
+                            className="text-blue-600 font-medium"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="text-red-600 font-medium"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <ConfirmModal
+                isOpen={isModalOpen}
+                title="Delete Recipe"
+                description={`Are you sure you want to delete "${recipe.name}"?`}
+                onConfirm={handleDelete}
+                onCancel={() => setIsModalOpen(false)}
+            />
+        </>
     );
 }
