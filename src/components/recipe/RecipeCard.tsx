@@ -1,36 +1,35 @@
-import type {Recipe} from "@/features/recipes/types";
-import { useRecipeStore } from "@/features/recipes/store";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import type { Recipe } from "@/features/recipes/types";
 
-interface Props {
-    recipe: Recipe;
-}
-
-export default function RecipeCard({ recipe }: Props) {
-    const toggleFavorite = useRecipeStore((s) => s.toggleFavorite);
-
-    const totalTime = recipe.prepTime + recipe.cookTime;
+export default function RecipeCard({ recipe }: { recipe: Recipe }) {
+    const navigate = useNavigate();
 
     return (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
-            <Link to={`/recipe/${recipe.id}`}>
-                <img
-                    src={recipe.image}
-                    alt={recipe.name}
-                    className="w-full h-48 object-cover"
-                    loading="lazy"
-                />
-            </Link>
+        <div className="bg-white rounded-xl shadow p-4 hover:shadow-lg transition">
+            <img
+                src={recipe.image}
+                alt={recipe.name}
+                className="h-40 w-full object-cover rounded-lg mb-3"
+            />
 
-            <div className="p-4">
-                <h3 className="font-heading text-xl">{recipe.name}</h3>
-                <p className="text-sm text-gray-500">{totalTime} min</p>
+            <h3 className="text-lg font-semibold mb-1">{recipe.name}</h3>
+            <p className="text-sm text-gray-600 mb-3">
+                {recipe.cuisine} • {recipe.difficulty}
+            </p>
+
+            <div className="flex justify-between">
+                <button
+                    onClick={() => navigate(`/recipe/${recipe.id}`)}
+                    className="text-olive font-medium"
+                >
+                    View
+                </button>
 
                 <button
-                    onClick={() => toggleFavorite(recipe.id)}
-                    className="mt-2 text-tomato"
+                    onClick={() => navigate(`/edit/${recipe.id}`)}
+                    className="text-tomato font-medium"
                 >
-                    {recipe.isFavorite ? "♥" : "♡"}
+                    Edit
                 </button>
             </div>
         </div>

@@ -10,6 +10,7 @@ export default function AppRoutes() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/recipe/:id" element={<RecipeDetailsPage />} />
                 <Route path="/create" element={<CreateRecipePage />} />
+                <Route path="/edit/:id" element={<CreateRecipePage />} />
             </Routes>
         </BrowserRouter>
     );
