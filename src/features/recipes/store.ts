@@ -5,7 +5,7 @@ import {seedRecipes} from "@/data/seedRecipes";
 
 interface RecipeState {
     recipes: Recipe[];
-    addRecipe: (recipe: Recipe) => void;
+    addRecipe: (recipe: Omit<Recipe, "id" | "createdAt">) => void;
     updateRecipe: (recipe: Recipe) => void;
     deleteRecipe: (id: string) => void;
     toggleFavorite: (id: string) => void;
@@ -18,7 +18,11 @@ export const useRecipeStore = create<RecipeState>()(
 
             addRecipe: (recipe) =>
                 set((state) => ({
-                    recipes: [...state.recipes, recipe],
+                    recipes: [...state.recipes, {
+                        ...recipe,
+                        id: crypto.randomUUID(),
+                        createdAt: new Date().toUTCString(),
+                    }],
                 })),
 
             updateRecipe: (updated) =>
