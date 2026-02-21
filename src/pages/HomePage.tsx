@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import {useState, useMemo, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecipeStore } from "@/features/recipes/store";
+import { useRecipeStore, useShoppingStore } from "@/features/recipes/store";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeFilters from "@/components/recipe/RecipeFilters";
 import type { SortOptions } from "@/components/recipe/RecipeFilters";
@@ -9,6 +9,8 @@ import debounce from "lodash.debounce";
 export default function HomePage() {
     const navigate = useNavigate();
     const recipes = useRecipeStore((s) => s.recipes);
+    const selectedRecipes = useShoppingStore((s) => s.selectedRecipes);
+    const toggleRecipeSelection = useShoppingStore((s) => s.toggleRecipeSelection);
 
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -84,13 +86,23 @@ export default function HomePage() {
         <div className="p-4 max-w-6xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
                 <h1 className="text-3xl font-heading">Your Mediterranean Recipe Box</h1>
-
-                <button
-                    onClick={() => navigate("/create")}
-                    className="bg-tomato text-white px-5 py-2 rounded-lg font-medium hover:opacity-90 transition"
-                >
-                    + Create Recipe
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => navigate("/create")}
+                        className="bg-tomato text-white px-5 py-2 rounded-lg font-medium hover:opacity-90 transition"
+                    >
+                        + Create Recipe
+                    </button>
+                    <button
+                        onClick={() => navigate("/shopping-list")}
+                        disabled={selectedRecipes.length === 0}
+                        className={`px-5 py-2 rounded-lg font-medium transition ${
+                            selectedRecipes.length === 0 ? "bg-gray-300 cursor-not-allowed" : "bg-olive text-white hover:opacity-90"
+                        }`}
+                    >
+                        Go to Shopping List ({selectedRecipes.length})
+                    </button>
+                </div>
             </div>
 
             <RecipeFilters
@@ -115,7 +127,12 @@ export default function HomePage() {
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {filteredRecipes.map((recipe) => (
-                    <RecipeCard key={recipe.id} recipe={recipe} />
+                    <RecipeCard
+                        key={recipe.id}
+                        recipe={recipe}
+                        selected={selectedRecipes.includes(recipe.id)}
+                        onSelect={() => toggleRecipeSelection(recipe.id)}
+                    />
                 ))}
             </div>
 
