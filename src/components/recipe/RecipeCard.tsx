@@ -64,13 +64,27 @@ export default function RecipeCard({recipe, selected = false, onSelect}: RecipeC
                     </p>
 
                     <div className="mt-3 flex flex-col sm:flex-row sm:justify-between gap-2">
-                        {/* Full-width buttons on mobile */}
                         <button
                             onClick={handleEdit}
-                            className="flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md text-secondary hover:bg-secondary/10 transition"
+                            className="flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md text-secondary
+                                       hover:bg-secondary/10 transition-all transform hover:scale-105 hover:shadow-md"
                             title="Edit"
                         >
                             <FiEdit size={18}/> Edit
+                        </button>
+
+                        <button
+                            onClick={handleToggleSelection}
+                            className={`flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md transition
+                                ${selected
+                                ? "bg-background text-text-secondary hover:bg-background/90"
+                                : "bg-accent text-background hover:bg-accent/90"
+                            }`}
+                            style={{minWidth: "110px"}}
+                            title={selected ? "Selected" : "Add to Shopping"}
+                        >
+                            <FiShoppingCart size={18}/>
+                            <span className="hidden sm:inline">{selected ? "Selected" : "Add"}</span>
                         </button>
 
                         <button
@@ -78,22 +92,11 @@ export default function RecipeCard({recipe, selected = false, onSelect}: RecipeC
                                 e.stopPropagation();
                                 setIsModalOpen(true);
                             }}
-                            className="flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md text-accent hover:bg-accent/10 transition"
+                            className="flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md text-accent
+                                       hover:bg-accent/10 transition-all transform hover:scale-105 hover:shadow-md"
                             title="Delete"
                         >
                             <FiTrash2 size={18}/> Delete
-                        </button>
-
-                        <button
-                            onClick={handleToggleSelection}
-                            className={`flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md transition ${
-                                selected
-                                    ? "bg-background text-text-secondary hover:bg-background/90"
-                                    : "bg-accent text-background hover:bg-accent/90"
-                            }`}
-                            title={selected ? "Selected" : "Add to Shopping"}
-                        >
-                            <FiShoppingCart size={18}/> {selected ? "Selected" : "Add"}
                         </button>
                     </div>
                 </div>
