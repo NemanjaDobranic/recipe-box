@@ -89,7 +89,8 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
         (difficulty !== "all" ? 1 : 0) +
         (favoritesOnly ? 1 : 0) +
         (maxTime ? 1 : 0) +
-        (tags.length ? 1 : 0);
+        (tags.length ? 1 : 0) +
+        (sortBy !== "recent" ? 1 : 0); // include sort in active filters
 
     const clearFilters = () => {
         setCuisine("all");
@@ -100,14 +101,60 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
         setSortBy("recent");
     };
 
+    const filterComponents = (
+        <>
+            <ThemedSelect<Option>
+                options={cuisineOptions}
+                value={cuisineOptions.find((opt) => opt.value === cuisine) || null}
+                onChange={(selected) => setCuisine(selected?.value || "all")}
+            />
+
+            <ThemedSelect<Option>
+                options={difficultyOptions}
+                value={
+                    difficultyOptions.find((opt) => opt.value === difficulty) || null
+                }
+                onChange={(selected) => setDifficulty(selected?.value || "all")}
+            />
+
+            <button
+                onClick={() => setFavoritesOnly(!favoritesOnly)}
+                className={`themed-button ${favoritesOnly ? "active" : ""}`}
+            >
+                ❤️ Favorites
+            </button>
+
+            <input
+                type="number"
+                min={1}
+                placeholder="Max cooking time (min)"
+                value={maxTime ?? ""}
+                onChange={(e) =>
+                    setMaxTime(e.target.value ? Number(e.target.value) : null)
+                }
+                className="themed-input"
+            />
+
+            <ThemedSelect<Option, true>
+                isMulti
+                options={tagOptions}
+                value={tagOptions.filter((opt) => tags.includes(opt.value))}
+                onChange={(selected) => setTags(selected.map((s) => s.value))}
+                placeholder="Filter by tags..."
+            />
+
+            <ThemedSelect<Option>
+                options={sortOptions}
+                value={sortOptions.find((opt) => opt.value === sortBy) || null}
+                onChange={(selected) => setSortBy(selected?.value as SortOptions)}
+            />
+        </>
+    );
+
     return (
         <div className="surface mb-8 animate-fade-in-up">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                    <h3 className="text-cooking-lg font-heading">
-                        Filter & Sort
-                    </h3>
-
                     {activeFiltersCount > 0 && (
                         <span className="badge bg-accent text-background animate-pulse">
               {activeFiltersCount} active
@@ -117,12 +164,13 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
 
                 <button
                     onClick={clearFilters}
-                    className="text-sm text-secondary hover:text-accent transition"
+                    className="text-sm text-accent"
                 >
                     Clear filters
                 </button>
             </div>
 
+            {/* Search */}
             <div className="mb-6">
                 <ThemedSelect<Option>
                     options={recipeOptions}
@@ -130,76 +178,22 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
                     inputValue={search}
                     onInputChange={(input) => setSearch(input)}
                     onChange={(selected) => {
-                        if (selected) {
-                            navigate(`/recipe/${selected.value}`);
-                        }
+                        if (selected) navigate(`/recipe/${selected.value}`);
                     }}
                     isClearable
                     placeholder="Search recipes by name..."
                 />
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <ThemedSelect<Option>
-                    options={cuisineOptions}
-                    value={
-                        cuisineOptions.find((opt) => opt.value === cuisine) || null
-                    }
-                    onChange={(selected) =>
-                        setCuisine(selected?.value || "all")
-                    }
-                />
+            <div className="mt-2">
+                <details className="sm:hidden">
+                    <summary className="font-medium cursor-pointer mb-2 text-accent">Filters</summary>
+                    <div className="grid grid-cols-1 gap-4">{filterComponents}</div>
+                </details>
 
-                <ThemedSelect<Option>
-                    options={difficultyOptions}
-                    value={
-                        difficultyOptions.find(
-                            (opt) => opt.value === difficulty
-                        ) || null
-                    }
-                    onChange={(selected) =>
-                        setDifficulty(selected?.value || "all")
-                    }
-                />
-
-                <button
-                    onClick={() => setFavoritesOnly(!favoritesOnly)}
-                    className={`themed-button ${favoritesOnly ? "active" : ""}`}
-                >
-                    ❤️ Favorites
-                </button>
-
-                <input
-                    type="number"
-                    min={1}
-                    placeholder="Max cooking time (min)"
-                    value={maxTime ?? ""}
-                    onChange={(e) => setMaxTime(e.target.value ? Number(e.target.value) : null)}
-                    className="themed-input"
-                />
-
-                <ThemedSelect<Option, true>
-                    isMulti
-                    options={tagOptions}
-                    value={tagOptions.filter((opt) =>
-                        tags.includes(opt.value)
-                    )}
-                    onChange={(selected) =>
-                        setTags(selected.map((s) => s.value))
-                    }
-                    placeholder="Filter by tags..."
-                />
-
-                <ThemedSelect<Option>
-                    options={sortOptions}
-                    value={
-                        sortOptions.find((opt) => opt.value === sortBy) ||
-                        null
-                    }
-                    onChange={(selected) =>
-                        setSortBy(selected?.value as SortOptions)
-                    }
-                />
+                <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filterComponents}
+                </div>
             </div>
         </div>
     );
