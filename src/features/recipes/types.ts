@@ -6,6 +6,8 @@ export interface Ingredient {
     quantity: number;
     unit: string;
     note?: string;
+    category?: string;
+    checked?: boolean;
 }
 
 export interface Recipe {
@@ -24,4 +26,22 @@ export interface Recipe {
     notes?: string;
     isFavorite: boolean;
     createdAt: string;
+}
+
+export interface ShoppingItem {
+    id: string;
+    item: string;
+    quantity: number;
+    unit: string;
+    category?: string;
+    note?: string;
+    checked: boolean;
+}
+
+export interface ShoppingStore {
+    selectedRecipes: string[]; // recipe ids
+    shoppingList: ShoppingItem[];
+    toggleRecipeSelection: (recipeId: string) => void;
+    generateShoppingList: (recipes: Recipe[]) => void;
+    toggleItemChecked: (itemId: string) => void;
 }
