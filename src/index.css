@@ -1,73 +1,308 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
 @import "tailwindcss";
 
-@import "tailwindcss";
-
-@theme {
-    --color-tomato: #C0392B;
-    --color-olive: #3E7C59;
-    --color-cream: #F4EFEA;
+:root {
+    --color-background: #F4EFEA;
+    --color-text: #333333;
+    --color-primary: #C0392B;
+    --color-secondary: #3E7C59;
+    --color-accent: #27AE60;
+    --color-surface: rgba(255, 255, 255, 0.85);
 
     --font-heading: "Playfair Display", serif;
     --font-body: "Inter", sans-serif;
+
+    --breakpoint-lg: 1024px;
+
+    --color-toggle-bg: #ffffff;
+    --color-toggle-text: #333333;
+    --color-toggle-shadow: rgba(0, 0, 0, 0.1);
 }
 
-@theme {
-    --breakpoint-lg: 1024px;
+[data-theme="dark"],
+.dark {
+    /* Dark mode */
+    --color-background: #1a1a1a;
+    --color-text: #f4f4f4;
+    --color-primary: #E67E22;
+    --color-secondary: #27AE60;
+    --color-accent: #F1C40F;
+    --color-surface: rgba(30, 30, 30, 0.85);
+    --color-toggle-bg: #2a2a2a;
+    --color-toggle-text: #f4f4f4;
+    --color-toggle-shadow: rgba(255, 255, 255, 0.2);
+}
+
+@layer utilities {
+    .bg-background {
+        background-color: var(--color-background);
+    }
+
+    .bg-primary {
+        background-color: var(--color-primary);
+    }
+
+    .bg-secondary {
+        background-color: var(--color-secondary);
+    }
+
+    .bg-accent {
+        background-color: var(--color-accent);
+    }
+
+    .bg-surface {
+        background-color: var(--color-surface);
+    }
+
+    .text-background {
+        color: var(--color-background);
+    }
+
+    .text-primary {
+        color: var(--color-primary);
+    }
+
+    .text-secondary {
+        color: var(--color-secondary);
+    }
+
+    .text-accent {
+        color: var(--color-accent);
+    }
+
+    .text-surface {
+        color: var(--color-surface);
+    }
+
+    .font-body {
+        font-family: var(--font-body), sans-serif;
+    }
+
+    .font-heading {
+        font-family: var(--font-heading), sans-serif;
+    }
 }
 
 @layer base {
     body {
-        @apply bg-cream text-gray-800 font-body;
+        color: var(--color-text);
+        font-family: var(--font-body), serif;
+        background-color: var(--color-background);
+        position: relative;
+        z-index: 0;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/assets/images/background-light.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.6;
+        z-index: -1;
+
+        transition: background-image 0.4s ease, opacity 0.4s ease;
+    }
+
+    [data-theme="dark"] body::before,
+    .dark body::before {
+        background-image: url('/assets/images/background-dark.png');
+        opacity: 0.1;
+    }
+
+    @media (max-width: 768px) and (orientation: portrait) {
+        body::before {
+            background-position: top center;
+            background-size: auto 150%;
+        }
+    }
+
+    h1 {
+        font-family: var(--font-heading), sans-serif;
+        font-size: 2.25rem;
+    }
+
+    h2 {
+        font-family: var(--font-heading), sans-serif;
+        font-size: 1.875rem;
+    }
+
+    h3 {
+        font-family: var(--font-heading), sans-serif;
+        font-size: 1.5rem;
+    }
+
+    p, li, span, input, button {
+        font-family: var(--font-body), sans-serif;
+        color: var(--color-text);
     }
 }
 
-@utility tomato-bg {
-    background-color: var(--color-tomato);
+.surface {
+    background-color: var(--color-surface);
+    backdrop-filter: blur(3px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
 }
 
-@layer utilities {
-    @keyframes slide-in {
-        0% {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
+.badge {
+    @apply text-sm px-2 py-1 rounded-full inline-block;
+}
+
+.cuisine-italian {
+    background-color: var(--color-secondary);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+}
+
+.cuisine-american {
+    background-color: var(--color-primary);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+}
+
+.cuisine-mediterranean {
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+}
+
+@keyframes slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
     }
-
-    .animate-slide-in {
-        animation: slide-in 0.3s ease-out forwards;
+    100% {
+        opacity: 1;
+        transform: translateY(0);
     }
+}
 
+.animate-slide-in {
+    animation: slide-in 0.3s ease-out forwards;
+}
 
-    @keyframes modal-bouncy-pop {
-        0% {
-            opacity: 0;
-            transform: scale(0.72) translateY(50px);
-        }
-        55% {
-            opacity: 1;
-            transform: scale(1.05) translateY(-10px);
-        }
-        70% {
-            transform: scale(0.98) translateY(5px);
-        }
-        85% {
-            transform: scale(1.01) translateY(-2px);
-        }
-        100% {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
+@keyframes modal-bouncy-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0.72) translateY(50px);
     }
-
-    .texture-paper {
-        background-image: radial-gradient(circle at 25% 25%, rgba(245, 235, 220, 0.4) 2%, transparent 2%),
-        radial-gradient(circle at 75% 75%, rgba(245, 235, 220, 0.3) 2%, transparent 2%);
-        background-size: 40px 40px;
+    55% {
+        opacity: 1;
+        transform: scale(1.05) translateY(-10px);
     }
+    70% {
+        transform: scale(0.98) translateY(5px);
+    }
+    85% {
+        transform: scale(1.01) translateY(-2px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
 
+.animate-bouncy-pop {
+    animation: modal-bouncy-pop 0.5s ease-out forwards;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.animate-pulse {
+    animation: pulse 0.6s ease-in-out infinite;
+}
+
+@keyframes fade-in-up {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out forwards;
+}
+
+.rounded-lg {
+    border-radius: 0.75rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.text-cooking-lg {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+.text-cooking-xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+body,
+header,
+.surface,
+.badge {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+body::before {
+    transition: background-image 0.4s ease, opacity 0.4s ease;
+}
+
+[data-theme="dark"] body::before,
+.dark body::before {
+    background-image: url('/assets/images/background-dark.png');
+    opacity: 0.15;
+}
+
+.dark-mode-toggle {
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.dark-mode-toggle:hover {
+    transform: scale(1.05);
+}
+
+.logo-theme-aware {
+    filter: none;
+    transition: filter 0.3s ease;
+}
+
+.dark .logo-theme-aware {
+    filter: invert(1) brightness(1.2);
 }
