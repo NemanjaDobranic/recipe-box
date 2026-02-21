@@ -2,6 +2,7 @@ import {create} from "zustand";
 import {persist} from "zustand/middleware";
 import type {Ingredient, Recipe} from "./types";
 import {seedRecipes} from "@/data/seedRecipes";
+import {inferCategory} from "@/features/recipes/utils/category.ts";
 
 interface RecipeState {
     recipes: Recipe[];
@@ -18,6 +19,7 @@ interface ShoppingState {
     toggleItemChecked: (id: string) => void;
     toggleRecipeSelection: (id: string) => void;
     generateShoppingList: (recipes: Recipe[]) => void;
+    clearShoppingList: () => void;
 }
 
 export const useRecipeStore = create<RecipeState>()(
@@ -63,7 +65,7 @@ export const useShoppingStore = create<ShoppingState>((set) => ({
     selectedRecipes: [],
     shoppingList: [],
 
-    setSelectedRecipes: (ids) => set({ selectedRecipes: ids }),
+    setSelectedRecipes: (ids) => set({selectedRecipes: ids}),
 
     toggleRecipeSelection: (recipeId: string) =>
         set((state) => ({
@@ -77,12 +79,13 @@ export const useShoppingStore = create<ShoppingState>((set) => ({
 
         recipes.forEach((recipe) => {
             recipe.ingredients.forEach((ing) => {
-                const key = `${ing.item.toLowerCase()}|${ing.unit}|${ing.category ?? "Other"}`;
+                const category = inferCategory(ing.item);
+                const key = `${ing.item.toLowerCase()}|${ing.unit}|${category}`;
 
                 if (aggregated[key]) {
                     aggregated[key].quantity += ing.quantity;
                 } else {
-                    aggregated[key] = { ...ing, checked: false };
+                    aggregated[key] = {...ing, checked: false, category};
                 }
             });
         });
@@ -90,19 +93,21 @@ export const useShoppingStore = create<ShoppingState>((set) => ({
         const shoppingList = Object.values(aggregated);
 
         shoppingList.sort((a, b) => {
-            const catA = a.category ?? "Other";
-            const catB = b.category ?? "Other";
+            const catA = inferCategory(a.item) ?? "Other";
+            const catB = inferCategory(b.item) ?? "Other";
             if (catA !== catB) return catA.localeCompare(catB);
             return a.item.localeCompare(b.item);
         });
 
-        set({ shoppingList });
+        set({shoppingList});
     },
 
     toggleItemChecked: (id) =>
         set((state) => ({
             shoppingList: state.shoppingList.map((item) =>
-                item.id === id ? { ...item, checked: !item.checked } : item
+                item.id === id ? {...item, checked: !item.checked} : item
             ),
         })),
+
+    clearShoppingList: () => set({shoppingList: [], selectedRecipes: []})
 }));
