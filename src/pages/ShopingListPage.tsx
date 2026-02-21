@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useShoppingStore } from "@/features/recipes/store";
 import { useRecipeStore } from "@/features/recipes/store";
-import type { Ingredient } from "@/features/recipes/types";
+import type { Ingredient, Recipe } from "@/features/recipes/types";
 
 export default function ShoppingListPage() {
     const selectedRecipes = useShoppingStore((s) => s.selectedRecipes);
@@ -11,14 +11,17 @@ export default function ShoppingListPage() {
     const recipes = useRecipeStore((s) => s.recipes);
 
     useEffect(() => {
-        const selectedRecipeObjects = recipes.filter((r) => selectedRecipes.includes(r.id));
+        const selectedRecipeObjects: Recipe[] = recipes.filter((r) =>
+            selectedRecipes.includes(r.id)
+        );
+
         if (selectedRecipeObjects.length > 0) {
             generateShoppingList(selectedRecipeObjects);
         }
     }, [recipes, selectedRecipes, generateShoppingList]);
 
     const groupedIngredients: Record<string, Ingredient[]> = shoppingList.reduce(
-        (acc, item) => {
+        (acc: Record<string, Ingredient[]>, item) => {
             const category = item.category ?? "Other";
             if (!acc[category]) acc[category] = [];
             acc[category].push(item);
@@ -32,7 +35,9 @@ export default function ShoppingListPage() {
             <h1 className="text-3xl font-heading mb-6">Shopping List</h1>
 
             {shoppingList.length === 0 ? (
-                <p>No items yet. Select recipes and generate the list.</p>
+                <p className="text-gray-500">
+                    No items yet. Select recipes and generate the list.
+                </p>
             ) : (
                 Object.entries(groupedIngredients).map(([category, items]) => (
                     <div key={category} className="mb-4">
@@ -47,8 +52,9 @@ export default function ShoppingListPage() {
                                         className="accent-red-500"
                                     />
                                     <span className={item.checked ? "line-through text-gray-400" : ""}>
-                    {item.quantity} {item.unit} {item.item} {item.note ? `(${item.note})` : ""}
-                  </span>
+                                        {item.quantity} {item.unit} {item.item}{" "}
+                                        {item.note ? `(${item.note})` : ""}
+                                    </span>
                                 </li>
                             ))}
                         </ul>
