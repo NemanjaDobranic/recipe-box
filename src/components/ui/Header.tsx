@@ -12,7 +12,7 @@ export const Header = () => {
 
     return (
         <header
-            className="relative flex justify-between items-center px-6 md:px-40 py-4 shadow-md"
+            className="relative flex justify-between items-center px-8 md:px-40 py-4 shadow-md"
             style={{
                 backgroundColor: "var(--color-background)",
                 color: "var(--color-text)",
