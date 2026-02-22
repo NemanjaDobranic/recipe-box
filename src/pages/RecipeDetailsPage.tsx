@@ -4,6 +4,7 @@ import {useRecipeStore} from "@/features/recipes/store";
 import type {Ingredient} from "@/features/recipes/types.ts";
 import Heart from "@/components/ui/HeartButton.tsx";
 import {FiRefreshCw} from "react-icons/fi";
+import DishImage from "@/components/ui/DishImage.tsx";
 
 export default function RecipeDetailsPage() {
     const {id} = useParams();
@@ -47,26 +48,26 @@ export default function RecipeDetailsPage() {
     return (
         <div className="min-h-screen transition-all mx-0 px-8 md:px-40 py-8">
             <div className="relative">
-                <img
-                    src={recipe.image}
-                    alt={recipe.name}
-                    className="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md transform transition-transform duration-300 hover:scale-105"
+                <DishImage src={recipe.image}
+                           alt={recipe.name}
+                           className="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md"
+                           wrapperClassName={"block w-full h-full"}
                 />
                 {recipe.isFavorite && (
-                    <div className="absolute top-4 right-4">
-                        <div className="hidden md:block">
+                    <div className=" absolute top-4 right-4">
+                        <div className=" hidden md:block">
                             <Heart favorite size={48}/>
                         </div>
-                        <div className="block md:hidden">
+                        <div className=" block md:hidden">
                             <Heart favorite size={32}/>
                         </div>
                     </div>
                 )}
             </div>
 
-            <div className="p-6 md:p-8 bg-surface rounded-xl">
-                <div className="flex flex-row items-center md:items-center justify-between mb-4 gap-4">
-                    <h1 className="font-heading text-3xl md:text-4xl leading-tight tracking-tight">
+            <div className=" p-6 md:p-8 bg-surface rounded-xl">
+                <div className=" flex flex-row items-center md:items-center justify-between mb-4 gap-4">
+                    <h1 className=" font-heading text-3xl md:text-4xl leading-tight tracking-tight">
                         {recipe.name}
                     </h1>
 
@@ -74,32 +75,32 @@ export default function RecipeDetailsPage() {
                         favorite={recipe.isFavorite}
                         onClick={handleFavoriteClick}
                         size={32}
-                        className="md:m-0"
+                        className=" md:m-0"
                     />
                 </div>
 
-                <p className="text-gray-700 mb-4">{recipe.description}</p>
+                <p className=" text-gray-700 mb-4">{recipe.description}</p>
 
-                <div className="flex flex-wrap gap-4 text-sm mb-6 text-gray-600 items-center">
+                <div className=" flex flex-wrap gap-4 text-sm mb-6 text-gray-600 items-center">
                     <span>🍽 {recipe.cuisine}</span>
                     <span>⏱ {totalTime} min</span>
                     <span>🔥 {recipe.difficulty}</span>
 
-                    <span className="flex items-center gap-2">
+                    <span className=" flex items-center gap-2">
                         Servings:
                         <button
                             onClick={() => setServings((prev) => Math.max(1, prev - 1))}
-                            className="px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
+                            className=" px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
                         >
                             −
                         </button>
-                        <span className="min-w-[40px] text-center font-semibold">{servings}</span>
-                        <button
-                            onClick={() => setServings((prev) => prev + 1)}
-                            className="px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
-                        >
-                            +
-                        </button>
+                        <span className=" min-w-[40px] text-center font-semibold">{servings}</span>
+            <button
+                onClick={() => setServings((prev) => prev + 1)}
+                className="px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
+            >
+                +
+            </button>
                         {servings !== recipe.servings && (
                             <button
                                 onClick={() => setServings(recipe.servings)}
@@ -109,7 +110,7 @@ export default function RecipeDetailsPage() {
                                 <FiRefreshCw className="w-4 h-4"/>
                             </button>
                         )}
-                    </span>
+        </span>
                 </div>
 
                 <button
@@ -135,17 +136,20 @@ export default function RecipeDetailsPage() {
                     cookingMode={cookingMode}
                 />
 
-                {recipe.notes && (
-                    <>
-                        <SectionTitle title="Notes"/>
-                        <div className="mt-2 p-4 bg-surface rounded-lg text-primary">
-                            {recipe.notes}
-                        </div>
-                    </>
-                )}
+                {
+                    recipe.notes && (
+                        <>
+                            <SectionTitle title="Notes"/>
+                            <div className="mt-2 p-4 bg-surface rounded-lg text-primary">
+                                {recipe.notes}
+                            </div>
+                        </>
+                    )
+                }
             </div>
         </div>
-    );
+    )
+        ;
 }
 
 function SectionTitle({title}: { title: string }) {

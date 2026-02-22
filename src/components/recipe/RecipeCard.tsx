@@ -6,8 +6,8 @@ import type {Recipe} from "@/features/recipes/types";
 import {useToast} from "@/context/useToast.ts";
 import {FiEdit, FiTrash2, FiShoppingCart, FiCheck} from "react-icons/fi";
 import 'react-lazy-load-image-component/src/effects/blur.css';
-import {LazyLoadImage} from 'react-lazy-load-image-component';
 import Heart from "@/components/ui/HeartButton.tsx";
+import DishImage from "@/components/ui/DishImage.tsx";
 
 interface RecipeCardProps {
     recipe: Recipe;
@@ -50,12 +50,11 @@ export default function RecipeCard({recipe, selected = false, onSelect}: RecipeC
                 onClick={() => navigate(`/recipe/${recipe.id}`)}
                 className="bg-surface rounded-xl shadow-md hover:shadow-lg transition relative overflow-hidden cursor-pointer flex flex-col"
             >
-                <LazyLoadImage
+                <DishImage
                     src={recipe.image}
                     alt={recipe.name}
-                    effect="blur"
-                    placeholderSrc="/assets/images/placeholder.png"
                     className="h-40 w-full object-cover rounded-lg mb-3"
+                    wrapperClassName="w-full"
                 />
                 {recipe.isFavorite && <div className="absolute top-4 right-4">
                     <div className="hidden md:block">
