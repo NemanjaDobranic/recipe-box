@@ -50,11 +50,16 @@ export default function RecipeDetailsPage() {
                 <img
                     src={recipe.image}
                     alt={recipe.name}
-                    className="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md"
+                    className="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md transform transition-transform duration-300 hover:scale-105"
                 />
                 {recipe.isFavorite && (
-                    <div className="absolute top-0 right-6">
-                        <Heart favorite size={48}/>
+                    <div className="absolute top-4 right-4">
+                        <div className="hidden md:block">
+                            <Heart favorite size={48}/>
+                        </div>
+                        <div className="block md:hidden">
+                            <Heart favorite size={32}/>
+                        </div>
                     </div>
                 )}
             </div>

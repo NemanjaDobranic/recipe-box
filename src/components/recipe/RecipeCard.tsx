@@ -7,6 +7,7 @@ import {useToast} from "@/context/useToast.ts";
 import {FiEdit, FiTrash2, FiShoppingCart, FiCheck} from "react-icons/fi";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import {LazyLoadImage} from 'react-lazy-load-image-component';
+import Heart from "@/components/ui/HeartButton.tsx";
 
 interface RecipeCardProps {
     recipe: Recipe;
@@ -56,6 +57,14 @@ export default function RecipeCard({recipe, selected = false, onSelect}: RecipeC
                     placeholderSrc="/assets/images/placeholder.png"
                     className="h-40 w-full object-cover rounded-lg mb-3"
                 />
+                {recipe.isFavorite && <div className="absolute top-4 right-4">
+                    <div className="hidden md:block">
+                        <Heart favorite size={32}/>
+                    </div>
+                    <div className="block md:hidden">
+                        <Heart favorite size={24}/>
+                    </div>
+                </div>}
 
                 <div className="p-4 flex flex-col gap-2">
                     <h3 className="text-lg font-heading text-primary">{recipe.name}</h3>

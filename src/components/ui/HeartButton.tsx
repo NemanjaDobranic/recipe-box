@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 
 interface HeartProps {
     favorite: boolean;
@@ -7,7 +7,7 @@ interface HeartProps {
     size?: number;
 }
 
-export default function Heart({ favorite, onClick, className = "", size = 32 }: HeartProps) {
+export default function Heart({favorite, onClick, size = 32}: HeartProps) {
     const [animating, setAnimating] = useState(false);
 
     useEffect(() => {
@@ -26,12 +26,35 @@ export default function Heart({ favorite, onClick, className = "", size = 32 }: 
     return (
         <span
             onClick={onClick}
-            className={`cursor-pointer select-none inline-block transition-transform duration-300 ${
-                animating ? "scale-125" : "scale-100"
-            } ${favorite ? "text-secondary" : "text-gray-400 hover:text-secondary"} ${className}`}
-            style={{ fontSize: size }}
+            className="
+            cursor-pointer
+            flex items-center justify-center
+            rounded-full
+            bg-surface/80 backdrop-blur-md
+            shadow-md hover:shadow-lg
+            transition-all duration-300
+        "
+            style={{
+                width: size + 8,
+                height: size + 8,
+            }}
+        >
+        <span
+            className={`
+                select-none
+                transition-transform duration-300
+                ${animating ? "scale-125" : "scale-100"}
+                ${
+                favorite
+                    ? "text-secondary drop-shadow-md"
+                    : "text-gray-400 hover:text-secondary"
+            }
+                hover:scale-110
+            `}
+            style={{fontSize: size}}
         >
             ♥
         </span>
+    </span>
     );
 }
