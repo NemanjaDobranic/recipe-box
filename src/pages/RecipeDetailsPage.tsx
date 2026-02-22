@@ -8,8 +8,7 @@ export default function RecipeDetailsPage() {
     const recipes = useRecipeStore((s) => s.recipes);
     const toggleFavorite = useRecipeStore((s) => s.toggleFavorite);
 
-    const recipe = recipes.find((r) => r.id === id)!;
-
+    const recipe = recipes.find((r) => r.id === id);
     const [servings, setServings] = useState(recipe?.servings ?? 1);
     const [cookingMode, setCookingMode] = useState(false);
     const [checkedIngredients, setCheckedIngredients] = useState<number[]>([]);
@@ -17,16 +16,12 @@ export default function RecipeDetailsPage() {
 
     const adjustedIngredients = useMemo(() => {
         if (!recipe) return [];
-
         const factor = servings / recipe.servings;
-
         return recipe.ingredients.map((ing) => ({
             ...ing,
-            quantity:
-                +(ing.quantity * factor).toFixed(2),
+            quantity: +(ing.quantity * factor).toFixed(2),
         }));
     }, [recipe, servings]);
-
 
     const toggleIngredient = (index: number) => {
         setCheckedIngredients((prev) =>
@@ -45,23 +40,26 @@ export default function RecipeDetailsPage() {
     }
 
     const totalTime = recipe.prepTime + recipe.cookTime;
+
     return (
-        <div className="min-h-screen bg-cream sm:px-6 md:px-8 py-6">
+        <div className="min-h-screen transition-all mx-0 px-8 md:px-40 py-8">
             <img
                 src={recipe.image}
                 alt={recipe.name}
                 className="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md"
             />
 
-            <div className="max-w-3xl mx-auto">
-                <div className="flex items-center justify-between mb-4">
-                    <h1 className="text-3xl md:text-4xl font-heading leading-tight tracking-tight">
+            <div className="p-6 md:p-8 bg-surface rounded-xl">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
+                    <h1 className="font-heading text-3xl md:text-4xl leading-tight tracking-tight">
                         {recipe.name}
                     </h1>
                     <button
                         onClick={() => toggleFavorite(recipe.id)}
-                        className={`text-3xl md:text-4xl transition-colors ${
-                            recipe.isFavorite ? "text-red-500" : "text-gray-400 hover:text-red-500"
+                        className={`transition-colors icon-sm md:icon-sm ${
+                            recipe.isFavorite
+                                ? "text-red-500"
+                                : "text-gray-400 hover:text-red-500"
                         }`}
                         title={recipe.isFavorite ? "Remove from favorites" : "Add to favorites"}
                     >
@@ -71,46 +69,42 @@ export default function RecipeDetailsPage() {
 
                 <p className="text-gray-700 mb-4">{recipe.description}</p>
 
-                <div className="flex flex-wrap gap-4 text-sm mb-6 text-gray-600">
+                <div className="flex flex-wrap gap-4 text-sm mb-6 text-gray-600 items-center">
                     <span>🍽 {recipe.cuisine}</span>
                     <span>⏱ {totalTime} min</span>
                     <span>🔥 {recipe.difficulty}</span>
-                    <span>
+
+                    <span className="flex items-center gap-2">
             Servings:
-            <div className="flex items-center gap-2 ml-2">
-              <button
-                  onClick={() => setServings((prev) => Math.max(1, prev - 1))}
-                  className="px-3 py-1 bg-gray-200 rounded-lg text-lg"
-              >
-                −
-              </button>
-
-              <span className="min-w-[40px] text-center font-semibold text-lg">
-                {servings}
-              </span>
-
-              <button
-                  onClick={() => setServings((prev) => prev + 1)}
-                  className="px-3 py-1 bg-gray-200 rounded-lg text-lg"
-              >
-                +
-              </button>
-
-                            {servings !== recipe.servings && (
-                                <button
-                                    onClick={() => setServings(recipe.servings)}
-                                    className="text-sm text-gray-500 underline ml-2"
-                                >
-                                    Reset
-                                </button>
-                            )}
-            </div>
+            <button
+                onClick={() => setServings((prev) => Math.max(1, prev - 1))}
+                className="px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
+            >
+              −
+            </button>
+            <span className="min-w-[40px] text-center font-semibold">
+              {servings}
+            </span>
+            <button
+                onClick={() => setServings((prev) => prev + 1)}
+                className="px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
+            >
+              +
+            </button>
+                        {servings !== recipe.servings && (
+                            <button
+                                onClick={() => setServings(recipe.servings)}
+                                className="text-sm text-gray-500 underline ml-2"
+                            >
+                                Reset
+                            </button>
+                        )}
           </span>
                 </div>
 
                 <button
                     onClick={() => setCookingMode(!cookingMode)}
-                    className="mb-8 px-4 py-2 bg-tomato text-white rounded-lg hover:bg-red-600 transition"
+                    className="mb-8 px-4 py-2 bg-secondary text-background rounded-lg hover:opacity-90 transition-all"
                 >
                     {cookingMode ? "Exit Cooking Mode" : "Start Cooking"}
                 </button>
@@ -123,7 +117,6 @@ export default function RecipeDetailsPage() {
                     cookingMode={cookingMode}
                 />
 
-                {/* INSTRUCTIONS */}
                 <SectionTitle title="Instructions"/>
                 <StepList
                     steps={recipe.instructions}
@@ -132,11 +125,10 @@ export default function RecipeDetailsPage() {
                     cookingMode={cookingMode}
                 />
 
-                {/* NOTES */}
                 {recipe.notes && (
                     <>
                         <SectionTitle title="Notes"/>
-                        <div className="mt-2 p-4 bg-gray-50 rounded-lg text-gray-700">
+                        <div className="mt-2 p-4 bg-surface rounded-lg text-primary">
                             {recipe.notes}
                         </div>
                     </>
@@ -146,10 +138,12 @@ export default function RecipeDetailsPage() {
     );
 }
 
+// SECTION TITLE COMPONENT
 function SectionTitle({title}: { title: string }) {
-    return <h2 className="text-2xl font-heading mb-4 mt-8">{title}</h2>;
+    return <h2 className="text-2xl md:text-3xl font-heading mb-4 mt-8">{title}</h2>;
 }
 
+// INGREDIENT LIST
 function IngredientList({
                             ingredients,
                             checkedIngredients,
@@ -172,7 +166,7 @@ function IngredientList({
                                 type="checkbox"
                                 checked={checked}
                                 onChange={() => toggleIngredient(i)}
-                                className="accent-red-500"
+                                className="accent-accent icon-sm"
                             />
                         )}
                         <span className={checked ? "line-through text-gray-400" : ""}>
@@ -186,6 +180,7 @@ function IngredientList({
     );
 }
 
+// STEP LIST
 function StepList({
                       steps,
                       checkedSteps,
@@ -204,19 +199,19 @@ function StepList({
                 return (
                     <li
                         key={i}
-                        className={`flex items-start gap-3 p-2 rounded-lg transition duration-200 ease-in-out ${
-                            checked ? "bg-gray-100 opacity-70" : "hover:bg-gray-50"
+                        className={`flex items-start gap-3 p-2 rounded-lg transition-all duration-200 ease-in-out ${
+                            checked ? "bg-surface opacity-70" : "hover:bg-surface"
                         }`}
                     >
                         {cookingMode && (
                             <input
                                 type="checkbox"
-                                className="mt-1 accent-red-500"
+                                className="mt-1 accent-accent icon-sm"
                                 checked={checked}
                                 onChange={() => toggleStep(i)}
                             />
                         )}
-                        <span className={`font-bold ${checked ? "text-gray-400" : "text-red-500"}`}>
+                        <span className={`font-bold ${checked ? "text-gray-400" : "text-accent"}`}>
               {i + 1}.
             </span>
                         <span className={`flex-1 ${checked ? "line-through text-gray-400" : ""}`}>

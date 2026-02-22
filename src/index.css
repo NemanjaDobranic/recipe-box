@@ -46,6 +46,7 @@
 
     .bg-surface {
         background-color: var(--color-surface);
+        box-shadow: 0 0 6px var(--color-toggle-shadow);
     }
 
     .text-background {
@@ -86,7 +87,6 @@
 
 .btn-solid:hover {
     opacity: 0.9;
-    cursor: pointer;
 }
 
 @layer base {
@@ -163,6 +163,15 @@
         font-family: var(--font-body), sans-serif;
         color: var(--color-primary);
     }
+
+    button {
+        cursor: pointer;
+        height: fit-content;
+    }
+
+    button:hover {
+        scale: 1.05;
+    }
 }
 
 .surface {
@@ -199,7 +208,6 @@
     color: var(--color-secondary);
     padding: 0.5rem 1rem;
     border-radius: 0.75rem;
-    cursor: pointer;
     transition: all 0.2s ease;
 }
 

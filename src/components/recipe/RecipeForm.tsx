@@ -72,7 +72,7 @@ export default function RecipeForm({
     return (
         <form
             onSubmit={handleSubmit}
-            className="bg-surface rounded-xl mx-8 md:mx-40 my-8 p-8 space-y-10 animate-fade-in-up"
+            className="bg-surface rounded-xl mx-8 md:mx-40 my-8 p-6 md:p-8 space-y-10 animate-fade-in-up"
         >
             <div className="text-center">
                 <h1 className="font-heading text-3xl mb-2">
