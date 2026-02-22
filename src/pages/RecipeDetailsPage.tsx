@@ -13,9 +13,11 @@ export default function RecipeDetailsPage() {
     const [cookingMode, setCookingMode] = useState(false);
     const [checkedIngredients, setCheckedIngredients] = useState<number[]>([]);
     const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
+    const [animatingHeart, setAnimatingHeart] = useState(false);
+
+    if (!recipe) return <p className="p-4 text-center">Recipe not found.</p>;
 
     const adjustedIngredients = useMemo(() => {
-        if (!recipe) return [];
         const factor = servings / recipe.servings;
         return recipe.ingredients.map((ing) => ({
             ...ing,
@@ -35,32 +37,45 @@ export default function RecipeDetailsPage() {
         );
     };
 
-    if (!recipe) {
-        return <p className="p-4 text-center">Recipe not found.</p>;
-    }
+    const handleFavoriteClick = () => {
+        toggleFavorite(recipe.id);
+        setAnimatingHeart(true);
+        setTimeout(() => setAnimatingHeart(false), 500);
+    };
 
     const totalTime = recipe.prepTime + recipe.cookTime;
 
     return (
         <div className="min-h-screen transition-all mx-0 px-8 md:px-40 py-8">
-            <img
-                src={recipe.image}
-                alt={recipe.name}
-                className="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md"
-            />
+            <div className="relative">
+                <img
+                    src={recipe.image}
+                    alt={recipe.name}
+                    className="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md"
+                />
+
+                {recipe.isFavorite && (
+                    <span
+                        className={`absolute top-4 right-4 text-secondary text-5xl drop-shadow-lg transition-transform duration-300 ${
+                            animatingHeart ? "scale-125" : "scale-100"
+                        }`}
+                    >
+                        ♥
+                    </span>
+                )}
+            </div>
 
             <div className="p-6 md:p-8 bg-surface rounded-xl">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
                     <h1 className="font-heading text-3xl md:text-4xl leading-tight tracking-tight">
                         {recipe.name}
                     </h1>
+
                     <button
-                        onClick={() => toggleFavorite(recipe.id)}
-                        className={`transition-colors icon-sm md:icon-sm ${
-                            recipe.isFavorite
-                                ? "text-red-500"
-                                : "text-gray-400 hover:text-red-500"
-                        }`}
+                        onClick={handleFavoriteClick}
+                        className={`transition-transform md:m-0 duration-300 text-3xl md:text-4xl ${
+                            recipe.isFavorite ? "text-secondary" : "text-gray-400 hover:text-secondary"
+                        } ${animatingHeart ? "scale-125" : ""}`}
                         title={recipe.isFavorite ? "Remove from favorites" : "Add to favorites"}
                     >
                         ♥
@@ -75,22 +90,20 @@ export default function RecipeDetailsPage() {
                     <span>🔥 {recipe.difficulty}</span>
 
                     <span className="flex items-center gap-2">
-            Servings:
-            <button
-                onClick={() => setServings((prev) => Math.max(1, prev - 1))}
-                className="px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
-            >
-              −
-            </button>
-            <span className="min-w-[40px] text-center font-semibold">
-              {servings}
-            </span>
-            <button
-                onClick={() => setServings((prev) => prev + 1)}
-                className="px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
-            >
-              +
-            </button>
+                        Servings:
+                        <button
+                            onClick={() => setServings((prev) => Math.max(1, prev - 1))}
+                            className="px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
+                        >
+                            −
+                        </button>
+                        <span className="min-w-[40px] text-center font-semibold">{servings}</span>
+                        <button
+                            onClick={() => setServings((prev) => prev + 1)}
+                            className="px-3 py-1 bg-surface rounded-lg font-medium hover:opacity-90 transition-all"
+                        >
+                            +
+                        </button>
                         {servings !== recipe.servings && (
                             <button
                                 onClick={() => setServings(recipe.servings)}
@@ -99,7 +112,7 @@ export default function RecipeDetailsPage() {
                                 Reset
                             </button>
                         )}
-          </span>
+                    </span>
                 </div>
 
                 <button
@@ -109,7 +122,7 @@ export default function RecipeDetailsPage() {
                     {cookingMode ? "Exit Cooking Mode" : "Start Cooking"}
                 </button>
 
-                <SectionTitle title="Ingredients"/>
+                <SectionTitle title="Ingredients" />
                 <IngredientList
                     ingredients={adjustedIngredients}
                     checkedIngredients={checkedIngredients}
@@ -117,7 +130,7 @@ export default function RecipeDetailsPage() {
                     cookingMode={cookingMode}
                 />
 
-                <SectionTitle title="Instructions"/>
+                <SectionTitle title="Instructions" />
                 <StepList
                     steps={recipe.instructions}
                     checkedSteps={checkedSteps}
@@ -127,7 +140,7 @@ export default function RecipeDetailsPage() {
 
                 {recipe.notes && (
                     <>
-                        <SectionTitle title="Notes"/>
+                        <SectionTitle title="Notes" />
                         <div className="mt-2 p-4 bg-surface rounded-lg text-primary">
                             {recipe.notes}
                         </div>
@@ -138,12 +151,10 @@ export default function RecipeDetailsPage() {
     );
 }
 
-// SECTION TITLE COMPONENT
-function SectionTitle({title}: { title: string }) {
+function SectionTitle({title}: {title: string}) {
     return <h2 className="text-2xl md:text-3xl font-heading mb-4 mt-8">{title}</h2>;
 }
 
-// INGREDIENT LIST
 function IngredientList({
                             ingredients,
                             checkedIngredients,
@@ -170,9 +181,9 @@ function IngredientList({
                             />
                         )}
                         <span className={checked ? "line-through text-gray-400" : ""}>
-              {ing.quantity} {ing.unit} {ing.item}
+                            {ing.quantity} {ing.unit} {ing.item}
                             {ing.note ? ` (${ing.note})` : ""}
-            </span>
+                        </span>
                     </li>
                 );
             })}
@@ -212,11 +223,11 @@ function StepList({
                             />
                         )}
                         <span className={`font-bold ${checked ? "text-gray-400" : "text-accent"}`}>
-              {i + 1}.
-            </span>
+                            {i + 1}.
+                        </span>
                         <span className={`flex-1 ${checked ? "line-through text-gray-400" : ""}`}>
-              {step}
-            </span>
+                            {step}
+                        </span>
                     </li>
                 );
             })}
