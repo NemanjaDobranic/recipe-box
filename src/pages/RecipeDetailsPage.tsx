@@ -2,6 +2,7 @@ import {useState, useMemo} from "react";
 import {useParams} from "react-router-dom";
 import {useRecipeStore} from "@/features/recipes/store";
 import type {Ingredient} from "@/features/recipes/types.ts";
+import Heart from "@/components/ui/HeartButton.tsx";
 
 export default function RecipeDetailsPage() {
     const {id} = useParams();
@@ -13,7 +14,6 @@ export default function RecipeDetailsPage() {
     const [cookingMode, setCookingMode] = useState(false);
     const [checkedIngredients, setCheckedIngredients] = useState<number[]>([]);
     const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
-    const [animatingHeart, setAnimatingHeart] = useState(false);
 
     if (!recipe) return <p className="p-4 text-center">Recipe not found.</p>;
 
@@ -39,8 +39,6 @@ export default function RecipeDetailsPage() {
 
     const handleFavoriteClick = () => {
         toggleFavorite(recipe.id);
-        setAnimatingHeart(true);
-        setTimeout(() => setAnimatingHeart(false), 500);
     };
 
     const totalTime = recipe.prepTime + recipe.cookTime;
@@ -53,15 +51,10 @@ export default function RecipeDetailsPage() {
                     alt={recipe.name}
                     className="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md"
                 />
-
                 {recipe.isFavorite && (
-                    <span
-                        className={`absolute top-4 right-4 text-secondary text-5xl drop-shadow-lg transition-transform duration-300 ${
-                            animatingHeart ? "scale-125" : "scale-100"
-                        }`}
-                    >
-                        ♥
-                    </span>
+                    <div className="absolute top-4 right-4">
+                        <Heart favorite size={48} />
+                    </div>
                 )}
             </div>
 
@@ -71,15 +64,12 @@ export default function RecipeDetailsPage() {
                         {recipe.name}
                     </h1>
 
-                    <button
+                    <Heart
+                        favorite={recipe.isFavorite}
                         onClick={handleFavoriteClick}
-                        className={`transition-transform md:m-0 duration-300 text-3xl md:text-4xl ${
-                            recipe.isFavorite ? "text-secondary" : "text-gray-400 hover:text-secondary"
-                        } ${animatingHeart ? "scale-125" : ""}`}
-                        title={recipe.isFavorite ? "Remove from favorites" : "Add to favorites"}
-                    >
-                        ♥
-                    </button>
+                        size={32}
+                        className="md:m-0"
+                    />
                 </div>
 
                 <p className="text-gray-700 mb-4">{recipe.description}</p>
@@ -151,10 +141,10 @@ export default function RecipeDetailsPage() {
     );
 }
 
+// SECTION TITLE COMPONENT
 function SectionTitle({title}: {title: string}) {
     return <h2 className="text-2xl md:text-3xl font-heading mb-4 mt-8">{title}</h2>;
 }
-
 function IngredientList({
                             ingredients,
                             checkedIngredients,
