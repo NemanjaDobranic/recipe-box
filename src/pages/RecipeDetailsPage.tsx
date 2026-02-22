@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import {useRecipeStore} from "@/features/recipes/store";
 import type {Ingredient} from "@/features/recipes/types.ts";
 import Heart from "@/components/ui/HeartButton.tsx";
+import {FiRefreshCw} from "react-icons/fi";
 
 export default function RecipeDetailsPage() {
     const {id} = useParams();
@@ -52,14 +53,14 @@ export default function RecipeDetailsPage() {
                     className="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md"
                 />
                 {recipe.isFavorite && (
-                    <div className="absolute top-4 right-4">
+                    <div className="absolute top-0 right-6">
                         <Heart favorite size={48}/>
                     </div>
                 )}
             </div>
 
             <div className="p-6 md:p-8 bg-surface rounded-xl">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
+                <div className="flex flex-row items-center md:items-center justify-between mb-4 gap-4">
                     <h1 className="font-heading text-3xl md:text-4xl leading-tight tracking-tight">
                         {recipe.name}
                     </h1>
@@ -97,9 +98,10 @@ export default function RecipeDetailsPage() {
                         {servings !== recipe.servings && (
                             <button
                                 onClick={() => setServings(recipe.servings)}
-                                className="text-sm text-gray-500 underline ml-2"
+                                className="ml-2 text-gray-500 hover:text-accent transition-colors"
+                                title="Reset servings"
                             >
-                                Reset
+                                <FiRefreshCw className="w-4 h-4"/>
                             </button>
                         )}
                     </span>
@@ -224,9 +226,9 @@ function StepList({
                         onClick={cookingMode ? () => toggleStep(i) : undefined}
                         className={`
               relative flex items-start gap-4 py-4 px-5 -mx-5 rounded-xl transition-all duration-200
-              cursor-${cookingMode ? 'pointer' : 'default'}
+              cursor-${cookingMode ? 'pointer' : 'default'} ${cookingMode ? 'opacity-100' : 'opacity-80'}
               ${done
-                            ? 'bg-surface-50 opacity-70'
+                            ? 'bg-surface-50'
                             : cookingMode
                                 ? 'hover:bg-surface-100 active:bg-surface-200'
                                 : 'hover:bg-surface-50'}
