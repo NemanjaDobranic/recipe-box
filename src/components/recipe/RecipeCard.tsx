@@ -63,19 +63,19 @@ export default function RecipeCard({recipe, selected = false, onSelect}: RecipeC
                         {recipe.cuisine} • {recipe.difficulty}
                     </p>
 
-                    <div className="mt-3 flex flex-col sm:flex-row sm:justify-between gap-2">
+                    <div className="mt-3 flex flex-row justify-between gap-2">
                         <button
                             onClick={handleEdit}
-                            className="flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md text-secondary
+                            className="flex items-center justify-center gap-2 w-fit p-2 rounded-md text-secondary
                                        hover:bg-secondary/10 transition-all transform hover:scale-105 hover:shadow-md"
                             title="Edit"
                         >
-                            <FiEdit size={18}/> Edit
+                            <FiEdit/> Edit
                         </button>
 
                         <button
                             onClick={handleToggleSelection}
-                            className={`flex items-center px-4 py-2 rounded-lg font-medium transition hover:opacity-80  ${
+                            className={`flex items-center w-fit m-auto px-4 py-2 rounded-lg font-medium transition hover:opacity-80  ${
                                 selected
                                     ? "cursor-not-allowed bg-surface"
                                     : "hover:shadow-md bg-secondary"
@@ -83,9 +83,9 @@ export default function RecipeCard({recipe, selected = false, onSelect}: RecipeC
                             title={selected ? "Selected" : "Add to Shopping"}
                         >
                             {selected ? (
-                                <FiCheck size={18}/>
+                                <FiCheck/>
                             ) : (
-                                <FiShoppingCart size={18}/>
+                                <FiShoppingCart/>
                             )}
                         </button>
 
@@ -94,11 +94,11 @@ export default function RecipeCard({recipe, selected = false, onSelect}: RecipeC
                                 e.stopPropagation();
                                 setIsModalOpen(true);
                             }}
-                            className="flex items-center justify-center gap-2 w-full sm:w-auto p-2 rounded-md text-accent
+                            className="flex items-center justify-center gap-2 w-auto p-2 rounded-md text-accent
                                        hover:bg-accent/10 transition-all transform hover:scale-105 hover:shadow-md"
                             title="Delete"
                         >
-                            <FiTrash2 size={18}/> Delete
+                            <FiTrash2/> Delete
                         </button>
                     </div>
                 </div>

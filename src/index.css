@@ -74,6 +74,16 @@
 }
 
 @layer base {
+    html {
+        font-size: 100%;
+    }
+
+    @media (max-width: 640px) {
+        html {
+            font-size: 75%;
+        }
+    }
+
     body {
         color: var(--color-primary);
         font-family: var(--font-body), serif;

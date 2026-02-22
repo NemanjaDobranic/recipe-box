@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 
 export const DarkModeToggle = (props: React.HTMLAttributes<HTMLButtonElement>) => {
     const [darkMode, setDarkMode] = useState(() => {
@@ -22,10 +22,8 @@ export const DarkModeToggle = (props: React.HTMLAttributes<HTMLButtonElement>) =
     return (
         <button
             onClick={() => setDarkMode(!darkMode)}
-            className="dark-mode-toggle p-2 rounded-md"
+            className="dark-mode-toggle bg-surface bg-accent p-2 rounded-md"
             style={{
-                backgroundColor: "var(--color-toggle-bg)",
-                color: "var(--color-toggle-text)",
                 boxShadow: "0 2px 6px var(--color-toggle-shadow)",
                 transition: "all 0.4s ease",
                 minWidth: "40px",

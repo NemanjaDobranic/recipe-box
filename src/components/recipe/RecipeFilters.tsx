@@ -1,7 +1,8 @@
 import type {FC} from "react";
-import {useMemo} from "react";
+import {useMemo, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {ThemedSelect} from "@/components/ui/ThemedSelect";
+import {FiChevronDown} from "react-icons/fi";
 
 type SortOptions = "recent" | "time" | "difficulty" | "favorites";
 
@@ -50,13 +51,10 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
                                                    availableTags,
                                                }) => {
     const navigate = useNavigate();
+    const [filtersOpen, setFiltersOpen] = useState(false);
 
     const recipeOptions = useMemo<Option[]>(
-        () =>
-            recipes.map((r) => ({
-                value: r.id,
-                label: r.name,
-            })),
+        () => recipes.map((r) => ({value: r.id, label: r.name})),
         [recipes]
     );
 
@@ -89,8 +87,7 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
         (difficulty !== "all" ? 1 : 0) +
         (favoritesOnly ? 1 : 0) +
         (maxTime ? 1 : 0) +
-        (tags.length ? 1 : 0) +
-        (sortBy !== "recent" ? 1 : 0); // include sort in active filters
+        (tags.length ? 1 : 0);
 
     const clearFilters = () => {
         setCuisine("all");
@@ -98,7 +95,6 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
         setFavoritesOnly(false);
         setMaxTime(null);
         setTags([]);
-        setSortBy("recent");
     };
 
     const filterComponents = (
@@ -142,23 +138,55 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
                 onChange={(selected) => setTags(selected.map((s) => s.value))}
                 placeholder="Filter by tags..."
             />
-
-            <ThemedSelect<Option>
-                options={sortOptions}
-                value={sortOptions.find((opt) => opt.value === sortBy) || null}
-                onChange={(selected) => setSortBy(selected?.value as SortOptions)}
-            />
         </>
     );
 
     return (
         <div className="surface mb-8 animate-fade-in-up">
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
+                {/* Search */}
+                <div className="flex-1">
+                    <ThemedSelect<Option>
+                        options={recipeOptions}
+                        value={null}
+                        inputValue={search}
+                        onInputChange={(input) => setSearch(input)}
+                        onChange={(selected) => {
+                            if (selected) navigate(`/recipe/${selected.value}`);
+                        }}
+                        isClearable
+                        placeholder="Search recipes by name..."
+                    />
+                </div>
+
+                {/* Sort */}
+                <div className="mt-2 sm:mt-0 sm:w-64">
+                    <ThemedSelect<Option>
+                        options={sortOptions}
+                        value={sortOptions.find((opt) => opt.value === sortBy) || null}
+                        onChange={(selected) => setSortBy(selected?.value as SortOptions)}
+                        placeholder="Sort by..."
+                    />
+                </div>
+            </div>
+
+            <div className="flex flex-row sm:items-center justify-between mb-2 gap-2">
+                <div className="flex flex-row items-center gap-2">
+                    <button
+                        className="bg-secondary flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium hover:opacity-90 hover:shadow-md transition"
+                        onClick={() => setFiltersOpen(!filtersOpen)}
+                    >
+                        <span>Filters</span>
+                        <FiChevronDown
+                            className={`transition-transform ${filtersOpen ? "rotate-180" : ""}`}
+                        />
+                    </button>
+
                     {activeFiltersCount > 0 && (
-                        <span className="badge bg-accent text-background animate-pulse">
-              {activeFiltersCount} active
-            </span>
+                        <span className="flex items-center justify-center w-6 h-6 text-xs rounded-full bg-accent text-background">
+                            {activeFiltersCount}
+                         </span>
                     )}
                 </div>
 
@@ -170,31 +198,12 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
                 </button>
             </div>
 
-            {/* Search */}
-            <div className="mb-6">
-                <ThemedSelect<Option>
-                    options={recipeOptions}
-                    value={null}
-                    inputValue={search}
-                    onInputChange={(input) => setSearch(input)}
-                    onChange={(selected) => {
-                        if (selected) navigate(`/recipe/${selected.value}`);
-                    }}
-                    isClearable
-                    placeholder="Search recipes by name..."
-                />
-            </div>
-
-            <div className="mt-2">
-                <details className="sm:hidden">
-                    <summary className="font-medium cursor-pointer mb-2 text-accent">Filters</summary>
-                    <div className="grid grid-cols-1 gap-4">{filterComponents}</div>
-                </details>
-
-                <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Filters section */}
+            {filtersOpen && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
                     {filterComponents}
                 </div>
-            </div>
+            )}
         </div>
     );
 };

@@ -85,7 +85,7 @@ export default function HomePage() {
     }, [recipes, debouncedSearch, cuisine, difficulty, favoritesOnly, maxTime, tags, sortBy]);
 
     return (
-        <div className="p-4 max-w-6xl mx-auto">
+        <div className="mx-0 px-8 md:px-40 py-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
                 <div className="flex gap-3 flex-wrap">
                     <button
