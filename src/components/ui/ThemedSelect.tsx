@@ -18,7 +18,7 @@ function createSelectStyles<
                 : "var(--color-secondary)",
             boxShadow: "none",
             borderRadius: "0.75rem",
-            minHeight: "42px",
+            height: "3rem",
             transition: "all 0.2s ease",
             "&:hover": {
                 borderColor: "var(--color-accent)",

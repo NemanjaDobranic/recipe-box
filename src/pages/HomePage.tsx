@@ -82,7 +82,7 @@ export default function HomePage() {
     }, [recipes, debouncedSearch, cuisine, difficulty, favoritesOnly, maxTime, tags, sortBy]);
 
     return (
-        <div className="mx-0 px-8 md:px-40 py-4">
+        <div className="mx-0 px-8 md:px-40 py-8">
             <RecipeFilters
                 recipes={recipes}
                 search={search}

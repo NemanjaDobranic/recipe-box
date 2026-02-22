@@ -46,7 +46,7 @@ export const Header = () => {
             <div className="hidden md:flex items-center gap-4">
                 <button
                     onClick={() => navigate("/create")}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium bg-secondary hover:opacity-90 transition"
+                    className="btn-solid"
                 >
                     <FaPlus/>
                     Create
@@ -89,7 +89,7 @@ export const Header = () => {
 
             {isMenuOpen && (
                 <div
-                    className="absolute top-full right-8 mt-4 p-5 rounded-lg shadow-lg flex flex-col gap-5 md:hidden z-50 bg-background dropdown-animate"
+                    className="absolute top-full right-8 mt-8 p-5 rounded-lg shadow-lg flex flex-col gap-5 md:hidden z-50 bg-background dropdown-animate"
                 >
                     <button
                         onClick={() => {

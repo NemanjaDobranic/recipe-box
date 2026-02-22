@@ -1,5 +1,6 @@
-import { useState } from "react";
-import type { Recipe, Difficulty, Ingredient } from "@/features/recipes/types";
+import {useState} from "react";
+import type {Recipe, Difficulty, Ingredient} from "@/features/recipes/types";
+import {ThemedSelect} from "@/components/ui/ThemedSelect.tsx";
 
 interface RecipeFormProps {
     existingRecipe?: Recipe;
@@ -25,6 +26,12 @@ export default function RecipeForm({
     const [notes, setNotes] = useState(existingRecipe?.notes ?? "");
     const [image, setImage] = useState(existingRecipe?.image ?? "");
 
+    const difficultyOptions = [
+        {value: "Easy", label: "Easy"},
+        {value: "Medium", label: "Medium"},
+        {value: "Hard", label: "Hard"},
+    ];
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const recipeData: Omit<Recipe, "id" | "createdAt"> = {
@@ -46,10 +53,10 @@ export default function RecipeForm({
     };
 
     const updateIngredient = (index: number, updated: Partial<Ingredient>) =>
-        setIngredients((prev) => prev.map((ing, i) => (i === index ? { ...ing, ...updated } : ing)));
+        setIngredients((prev) => prev.map((ing, i) => (i === index ? {...ing, ...updated} : ing)));
 
     const addIngredient = () =>
-        setIngredients((prev) => [...prev, { id: crypto.randomUUID(), item: "", quantity: 0, unit: "", note: "" }]);
+        setIngredients((prev) => [...prev, {id: crypto.randomUUID(), item: "", quantity: 0, unit: "", note: ""}]);
 
     const removeIngredient = (index: number) =>
         setIngredients((prev) => prev.filter((_, i) => i !== index));
@@ -63,93 +70,220 @@ export default function RecipeForm({
         setInstructions((prev) => prev.filter((_, i) => i !== index));
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto p-6">
-            <h1 className="text-3xl font-heading mb-6">{existingRecipe ? "Edit Recipe" : "Create Recipe"}</h1>
-
-            {/* Basic Info */}
-            <div>
-                <label className="block mb-1 font-medium">Name</label>
-                <input className="w-full border rounded-lg p-2" value={name} onChange={(e) => setName(e.target.value)} required />
+        <form
+            onSubmit={handleSubmit}
+            className="bg-surface rounded-xl mx-8 md:mx-40 my-8 p-8 space-y-10 animate-fade-in-up"
+        >
+            <div className="text-center">
+                <h1 className="font-heading text-3xl mb-2">
+                    {existingRecipe ? "Edit Recipe" : "Create Recipe"}
+                </h1>
+                <p className="text-sm opacity-70 mt-1">
+                    Fill in the details below to craft your recipe.
+                </p>
             </div>
 
-            <div>
-                <label className="block mb-1 font-medium">Description</label>
-                <textarea className="w-full border rounded-lg p-2" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} required />
-            </div>
-
-            <div>
-                <label className="block mb-1 font-medium">Cuisine</label>
-                <input className="w-full border rounded-lg p-2" value={cuisine} onChange={(e) => setCuisine(e.target.value)} required />
-            </div>
-
-            <div>
-                <label className="block mb-1 font-medium">Difficulty</label>
-                <select className="w-full border rounded-lg p-2" value={difficulty} onChange={(e) => setDifficulty(e.target.value as Difficulty)}>
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                </select>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
+            <section className="space-y-6">
                 <div>
-                    <label className="block mb-1 font-medium">Prep Time (min)</label>
-                    <input type="number" className="w-full border rounded-lg p-2" value={prepTime} onChange={(e) => setPrepTime(Number(e.target.value))} />
+                    <label className="block mb-2 font-medium">Name</label>
+                    <input
+                        className="themed-input w-full"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
                 </div>
 
                 <div>
-                    <label className="block mb-1 font-medium">Cook Time (min)</label>
-                    <input type="number" className="w-full border rounded-lg p-2" value={cookTime} onChange={(e) => setCookTime(Number(e.target.value))} />
+                    <label className="block mb-2 font-medium">Description</label>
+                    <textarea
+                        rows={3}
+                        className="themed-input w-full resize-none"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block mb-2 font-medium">Cuisine</label>
+                        <input
+                            className="themed-input w-full"
+                            value={cuisine}
+                            onChange={(e) => setCuisine(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block mb-2 font-medium">Difficulty</label>
+                        <ThemedSelect
+                            options={difficultyOptions}
+                            value={difficultyOptions.find((opt) => opt.value === difficulty)}
+                            onChange={(selected) => setDifficulty(selected?.value as Difficulty)}
+                            placeholder="Select difficulty..."
+                        />
+                    </div>
+
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div>
+                        <label className="block mb-2 font-medium">Prep Time</label>
+                        <input
+                            type="number"
+                            className="themed-input w-full"
+                            value={prepTime}
+                            onChange={(e) => setPrepTime(Number(e.target.value))}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block mb-2 font-medium">Cook Time</label>
+                        <input
+                            type="number"
+                            className="themed-input w-full"
+                            value={cookTime}
+                            onChange={(e) => setCookTime(Number(e.target.value))}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block mb-2 font-medium">Servings</label>
+                        <input
+                            type="number"
+                            className="themed-input w-full"
+                            value={servings}
+                            onChange={(e) => setServings(Number(e.target.value))}
+                        />
+                    </div>
                 </div>
 
                 <div>
-                    <label className="block mb-1 font-medium">Servings</label>
-                    <input type="number" className="w-full border rounded-lg p-2" value={servings} onChange={(e) => setServings(Number(e.target.value))} />
+                    <label className="block mb-2 font-medium">Tags</label>
+                    <input
+                        className="themed-input w-full"
+                        value={tags}
+                        onChange={(e) => setTags(e.target.value)}
+                        placeholder="e.g. vegetarian, pasta"
+                    />
                 </div>
-            </div>
 
-            <div>
-                <label className="block mb-1 font-medium">Tags (comma separated)</label>
-                <input className="w-full border rounded-lg p-2" value={tags} onChange={(e) => setTags(e.target.value)} />
-            </div>
+                <div>
+                    <label className="block mb-2 font-medium">Image URL</label>
+                    <input
+                        className="themed-input w-full"
+                        value={image}
+                        onChange={(e) => setImage(e.target.value)}
+                    />
+                </div>
 
-            <div>
-                <label className="block mb-1 font-medium">Image URL</label>
-                <input className="w-full border rounded-lg p-2" value={image} onChange={(e) => setImage(e.target.value)} placeholder="https://example.com/image.jpg" />
-            </div>
+                <div>
+                    <label className="block mb-2 font-medium">Notes</label>
+                    <textarea
+                        rows={3}
+                        className="themed-input w-full resize-none"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                    />
+                </div>
+            </section>
 
-            <div>
-                <label className="block mb-1 font-medium">Notes</label>
-                <textarea className="w-full border rounded-lg p-2" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional notes for this recipe" />
-            </div>
+            <section className="space-y-4">
+                <h2 className="font-heading text-xl">Ingredients</h2>
 
-            <div>
-                <h2 className="font-heading text-xl mt-4 mb-2">Ingredients</h2>
                 {ingredients.map((ing, i) => (
-                    <div key={ing.id} className="flex gap-2 mb-2">
-                        <input className="border rounded p-1 w-1/3" placeholder="Item" value={ing.item} onChange={(e) => updateIngredient(i, { item: e.target.value })} required />
-                        <input className="border rounded p-1 w-1/6" type="number" placeholder="Qty" value={ing.quantity} onChange={(e) => updateIngredient(i, { quantity: Number(e.target.value) })} required />
-                        <input className="border rounded p-1 w-1/6" placeholder="Unit" value={ing.unit} onChange={(e) => updateIngredient(i, { unit: e.target.value })} />
-                        <input className="border rounded p-1 w-1/3" placeholder="Note" value={ing.note ?? ""} onChange={(e) => updateIngredient(i, { note: e.target.value })} />
-                        <button type="button" className="px-2 bg-red-500 text-white rounded" onClick={() => removeIngredient(i)}>X</button>
+                    <div
+                        key={ing.id}
+                        className="grid md:grid-cols-5 gap-3 items-start"
+                    >
+                        <input
+                            className="themed-input"
+                            placeholder="Item"
+                            value={ing.item}
+                            onChange={(e) => updateIngredient(i, {item: e.target.value})}
+                            required
+                        />
+                        <input
+                            type="number"
+                            className="themed-input"
+                            placeholder="Qty"
+                            value={ing.quantity}
+                            onChange={(e) =>
+                                updateIngredient(i, {quantity: Number(e.target.value)})
+                            }
+                            required
+                        />
+                        <input
+                            className="themed-input"
+                            placeholder="Unit"
+                            value={ing.unit}
+                            onChange={(e) => updateIngredient(i, {unit: e.target.value})}
+                        />
+                        <input
+                            className="themed-input"
+                            placeholder="Note"
+                            value={ing.note ?? ""}
+                            onChange={(e) => updateIngredient(i, {note: e.target.value})}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => removeIngredient(i)}
+                            className="btn-solid font-normal"
+                        >
+                            Remove
+                        </button>
                     </div>
                 ))}
-                <button type="button" className="px-3 py-1 bg-olive text-white rounded" onClick={addIngredient}>+ Add Ingredient</button>
-            </div>
 
-            <div>
-                <h2 className="font-heading text-xl mt-4 mb-2">Instructions</h2>
+                <button
+                    type="button"
+                    onClick={addIngredient}
+                    className="btn-solid font-normal"
+                >
+                    + Add Ingredient
+                </button>
+            </section>
+
+            <section className="space-y-4">
+                <h2 className="font-heading text-xl">Instructions</h2>
+
                 {instructions.map((step, i) => (
-                    <div key={i} className="flex gap-2 mb-2">
-                        <textarea className="border rounded p-1 flex-1" value={step} onChange={(e) => updateInstruction(i, e.target.value)} required />
-                        <button type="button" className="px-2 bg-red-500 text-white rounded" onClick={() => removeInstruction(i)}>X</button>
+                    <div key={i} className="flex gap-3 items-start">
+        <textarea
+            className="themed-input flex-1 resize-none"
+            rows={2}
+            value={step}
+            onChange={(e) => updateInstruction(i, e.target.value)}
+            required
+        />
+                        <button
+                            type="button"
+                            onClick={() => removeInstruction(i)}
+                            className="btn-solid font-normal"
+                        >
+                            Remove
+                        </button>
                     </div>
                 ))}
-                <button type="button" className="px-3 py-1 bg-olive text-white rounded" onClick={addInstruction}>+ Add Step</button>
-            </div>
 
-            <div className="flex justify-end gap-4 pt-4">
-                <button type="submit" className="px-6 py-2 bg-olive text-white rounded-lg hover:opacity-90">{submitLabel}</button>
+                <button
+                    type="button"
+                    onClick={addInstruction}
+                    className="btn-solid font-normal"
+                >
+                    + Add Step
+                </button>
+            </section>
+
+            <div className="flex justify-end pt-6">
+                <button
+                    type="submit"
+                    className="btn-solid"
+                >
+                    {submitLabel}
+                </button>
             </div>
         </form>
     );

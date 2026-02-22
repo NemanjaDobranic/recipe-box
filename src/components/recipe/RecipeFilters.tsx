@@ -143,9 +143,7 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
 
     return (
         <div className="surface mb-8 animate-fade-in-up">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
-                {/* Search */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
                 <div className="flex-1">
                     <ThemedSelect<Option>
                         options={recipeOptions}
@@ -160,7 +158,6 @@ const RecipeFilters: FC<RecipeFiltersProps> = ({
                     />
                 </div>
 
-                {/* Sort */}
                 <div className="mt-2 sm:mt-0 sm:w-64">
                     <ThemedSelect<Option>
                         options={sortOptions}
