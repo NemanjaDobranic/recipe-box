@@ -1,14 +1,11 @@
 import {useState, useMemo, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
 import {useRecipeStore, useShoppingStore} from "@/features/recipes/store";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeFilters from "@/components/recipe/RecipeFilters";
 import type {SortOptions} from "@/components/recipe/RecipeFilters";
 import debounce from "lodash.debounce";
-import {FaPlus, FaShoppingCart} from "react-icons/fa";
 
 export default function HomePage() {
-    const navigate = useNavigate();
     const recipes = useRecipeStore((s) => s.recipes);
     const selectedRecipes = useShoppingStore((s) => s.selectedRecipes);
     const toggleRecipeSelection = useShoppingStore((s) => s.toggleRecipeSelection);
@@ -86,34 +83,6 @@ export default function HomePage() {
 
     return (
         <div className="mx-0 px-8 md:px-40 py-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-                <div className="flex gap-3 flex-wrap">
-                    <button
-                        onClick={() => navigate("/create")}
-                        className="bg-secondary flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium
-               hover:opacity-90 hover:shadow-md transition focus:outline-none focus:ring-2 focus:ring-offset-1
-               focus:ring-primary dark:focus:ring-accent"
-                        title="Create Recipe"
-                    >
-                        <FaPlus className="w-4 h-4 text-current"/>
-                        <span>Create Recipe</span>
-                    </button>
-
-                    <button
-                        onClick={() => navigate("/shopping-list")}
-                        disabled={selectedRecipes.length === 0}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition hover:opacity-80  ${
-                            selectedRecipes.length === 0
-                                ? "cursor-not-allowed bg-surface"
-                                : "hover:shadow-md bg-secondary"
-                        }`}
-                    >
-                        <FaShoppingCart/>
-                        <span>Cart ({selectedRecipes.length})</span>
-                    </button>
-                </div>
-            </div>
-
             <RecipeFilters
                 recipes={recipes}
                 search={search}
