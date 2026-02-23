@@ -70,7 +70,7 @@
     }
 
     .font-heading {
-        font-family: var(--font-heading), sans-serif;
+        font-family: var(--font-heading), serif;
     }
 }
 
@@ -108,7 +108,7 @@
 
     body {
         color: var(--color-primary);
-        font-family: var(--font-body), serif;
+        font-family: var(--font-body), sans-serif;
         background-color: var(--color-background);
         position: relative;
         z-index: 0;
@@ -145,17 +145,17 @@
     }
 
     h1 {
-        font-family: var(--font-heading), sans-serif;
+        font-family: var(--font-heading), serif;
         font-size: 2.25rem;
     }
 
     h2 {
-        font-family: var(--font-heading), sans-serif;
+        font-family: var(--font-heading), serif;
         font-size: 1.875rem;
     }
 
     h3 {
-        font-family: var(--font-heading), sans-serif;
+        font-family: var(--font-heading), serif;
         font-size: 1.5rem;
     }
 
