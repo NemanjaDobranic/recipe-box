@@ -3,12 +3,10 @@ import {useNavigate} from "react-router-dom";
 import {useShoppingStore} from "@/features/recipes/store";
 import {DarkModeToggle} from "@/components/ui/DarkModeToggle";
 import {FaPlus, FaShoppingCart, FaBars} from "react-icons/fa";
-import logo from "@/assets/images/logo.ico";
 
 export const Header = () => {
     const navigate = useNavigate();
     const selectedRecipes = useShoppingStore((s) => s.selectedRecipes);
-
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
@@ -24,7 +22,7 @@ export const Header = () => {
                 onClick={() => navigate("/")}
             >
                 <img
-                    src={logo}
+                    src={`${import.meta.env.BASE_URL}assets/images/logo.ico`}
                     alt="Recipe Box Logo"
                     className="w-12 h-12 rounded-full logo-theme-aware"
                     style={{
@@ -32,23 +30,18 @@ export const Header = () => {
                     }}
                 />
                 <div className="leading-tight">
-                    <h1 className="text-xl md:text-2xl font-heading">
-                        Recipe Box
-                    </h1>
+                    <h1 className="text-xl md:text-2xl font-heading">Recipe Box</h1>
                     <span
                         className="text-xs md:text-sm"
                         style={{color: "var(--color-secondary)"}}
                     >
-                        Cook With Confidence
-                    </span>
+            Cook With Confidence
+          </span>
                 </div>
             </div>
 
             <div className="hidden md:flex items-center gap-4">
-                <button
-                    onClick={() => navigate("/create")}
-                    className="btn-solid"
-                >
+                <button onClick={() => navigate("/create")} className="btn-solid">
                     <FaPlus/>
                     Create
                 </button>
@@ -78,8 +71,8 @@ export const Header = () => {
                     <FaShoppingCart/>
                     {selectedRecipes.length > 0 && (
                         <span className="absolute -top-1 -right-1 text-xs bg-secondary text-white rounded-full px-1">
-                            {selectedRecipes.length}
-                        </span>
+              {selectedRecipes.length}
+            </span>
                     )}
                 </button>
 
@@ -90,8 +83,7 @@ export const Header = () => {
 
             {isMenuOpen && (
                 <div
-                    className="absolute top-full right-8 mt-8 p-5 rounded-lg shadow-lg flex flex-col gap-5 md:hidden z-50 bg-background dropdown-animate"
-                >
+                    className="absolute top-full right-8 mt-8 p-5 rounded-lg shadow-lg flex flex-col gap-5 md:hidden z-50 bg-background dropdown-animate">
                     <button
                         onClick={() => {
                             navigate("/create");
