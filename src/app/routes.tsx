@@ -1,4 +1,4 @@
-import {Routes, Route} from "react-router-dom";
+import {Routes, Route, Navigate} from "react-router-dom";
 import HomePage from "@/pages/HomePage";
 import RecipeDetailsPage from "@/pages/RecipeDetailsPage";
 import CreateRecipePage from "@/pages/CreateRecipePage";
@@ -13,6 +13,7 @@ export default function AppRoutes() {
             <Route path="/create" element={<CreateRecipePage/>}/>
             <Route path="/edit/:id" element={<EditRecipePage/>}/>
             <Route path="shopping-list" element={<ShoppingListPage/>}/>
+            <Route path="*" element={<Navigate to="/" replace/>}/>
         </Routes>
     );
 }
