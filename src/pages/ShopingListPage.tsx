@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useShoppingStore, useRecipeStore } from "@/features/recipes/store";
 import type { Ingredient } from "@/features/recipes/types";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 export default function ShoppingListPage() {
     const recipes = useRecipeStore((s) => s.recipes);
@@ -49,46 +50,59 @@ export default function ShoppingListPage() {
                 <button
                     onClick={clearShoppingList}
                     disabled={shoppingList.length === 0}
-                    className={`px-4 py-2 rounded-lg font-medium transition ${
-                        shoppingList.length === 0
-                            ? "bg-gray-300 cursor-not-allowed"
-                            : "bg-red-600 text-white hover:opacity-90"
-                    }`}
+                    className={`
+                        px-4 py-2 rounded-xl font-medium font-body
+                        transition-all duration-200
+                        ${shoppingList.length === 0
+                        ? "bg-surface text-gray-400 cursor-not-allowed shadow-sm"
+                        : "bg-accent text-white hover:opacity-90 shadow-md"}
+                    `}
                 >
                     Clear List
                 </button>
             </div>
 
             {shoppingList.length === 0 ? (
-                <p className="text-gray-500">No items yet. Select recipes to generate your list.</p>
+                <p className="text-gray-500 text-center">No items yet. Select recipes to generate your list.</p>
             ) : (
                 Object.entries(groupedIngredients).map(([category, items]) => (
-                    <div key={category} className="mb-6 border-b pb-2">
+                    <div key={category} className="mb-6">
                         <button
                             onClick={() => toggleCategoryCollapse(category)}
-                            className="flex justify-between items-center w-full text-left font-heading text-xl mb-2 focus:outline-none"
+                            className="
+                                flex justify-between items-center w-full
+                                font-heading text-xl mb-2 px-3 py-2
+                                rounded-lg bg-surface shadow-sm
+                                hover:shadow-md transition-all duration-200
+                                focus:outline-none
+                            "
                         >
                             {category} ({items.length})
-                            <span className="ml-2">{collapsedCategories[category] ? "▼" : "▲"}</span>
+                            {collapsedCategories[category] ? <FiChevronDown /> : <FiChevronUp />}
                         </button>
                         {!collapsedCategories[category] && (
                             <ul className="space-y-2 pl-4">
                                 {items.map((item) => (
-                                    <li key={item.id} className="flex items-center gap-3">
+                                    <li
+                                        key={item.id}
+                                        className={`
+                                            flex items-center gap-3 px-3 py-2 rounded-lg
+                                            bg-surface/80 backdrop-blur-sm shadow-sm
+                                            transition-all duration-200
+                                            hover:shadow-md
+                                            ${item.checked ? "opacity-60 line-through" : ""}
+                                        `}
+                                    >
                                         <input
                                             type="checkbox"
                                             checked={item.checked ?? false}
                                             onChange={() => toggleItemChecked(item.id)}
-                                            className="accent-red-500 w-5 h-5"
+                                            className="accent-accent w-5 h-5"
                                         />
-                                        <span
-                                            className={`${
-                                                item.checked ? "line-through text-gray-400" : ""
-                                            }`}
-                                        >
-                      {item.quantity} {item.unit} {item.item}{" "}
+                                        <span className="font-body text-primary">
+                                            {item.quantity} {item.unit} {item.item}{" "}
                                             {item.note ? `(${item.note})` : ""}
-                    </span>
+                                        </span>
                                     </li>
                                 ))}
                             </ul>
