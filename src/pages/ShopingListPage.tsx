@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { useShoppingStore, useRecipeStore } from "@/features/recipes/store";
-import type { Ingredient } from "@/features/recipes/types";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import {useState, useEffect} from "react";
+import {useShoppingStore, useRecipeStore} from "@/features/recipes/store";
+import type {Ingredient} from "@/features/recipes/types";
+import {FiChevronDown, FiChevronUp} from "react-icons/fi";
 
 export default function ShoppingListPage() {
     const recipes = useRecipeStore((s) => s.recipes);
@@ -65,7 +65,8 @@ export default function ShoppingListPage() {
     return (
         <div className="min-h-screen px-6 md:px-20 py-12">
             <div className="max-w-3xl mx-auto bg-surface rounded-2xl shadow-md px-8 py-10">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-10 gap-4">
+                <div
+                    className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 md:mb-8 lg:mb-10 gap-4">
                     <h1 className="font-heading text-3xl md:text-4xl tracking-tight">
                         Shopping List
                     </h1>
@@ -92,8 +93,8 @@ export default function ShoppingListPage() {
                 )}
 
                 {shoppingList.length > 0 && (
-                    <div className="mb-12">
-                        <div className="flex justify-between items-center mb-3 text-xs text-gray-500">
+                    <div className="mb-6 md:mb-8 lg:mb-10">
+                        <div className="flex justify-between items-center mb-2 md:mb-3 text-xs text-gray-500">
               <span>
                 {completedCount} / {totalCount} completed
               </span>
@@ -117,20 +118,20 @@ export default function ShoppingListPage() {
                         <div className="w-full h-2 bg-accent/10 rounded-full overflow-hidden">
                             <div
                                 className="h-full bg-accent transition-all duration-300"
-                                style={{ width: `${progress}%` }}
+                                style={{width: `${progress}%`}}
                             />
                         </div>
                     </div>
                 )}
 
                 {Object.entries(groupedIngredients).map(([category, items]) => (
-                    <div key={category} className="mb-10">
+                    <div key={category} className="mb-6 md:mb-8 lg:mb-10">
                         <button
                             onClick={() => toggleCategoryCollapse(category)}
                             className="
                                           flex justify-between items-center w-full
                                           font-heading text-xl md:text-2xl
-                                          mb-5 transition
+                                          mb-3 md:mb-4 lg:mb-5 transition
                                           hover:text-accent
                                         "
                         >
@@ -140,13 +141,13 @@ export default function ShoppingListPage() {
               </span>
 
                             {collapsedCategories[category] ? (
-                                <FiChevronDown className="text-accent" />
+                                <FiChevronDown className="text-accent"/>
                             ) : (
-                                <FiChevronUp className="text-accent" />
+                                <FiChevronUp className="text-accent"/>
                             )}
                         </button>
 
-                        <div className="h-px bg-accent/20 mb-6"></div>
+                        <div className="h-px bg-accent/20 mb-4 md:mb-5 lg:mb-6"></div>
 
                         {!collapsedCategories[category] && (
                             <ul className="space-y-3">
