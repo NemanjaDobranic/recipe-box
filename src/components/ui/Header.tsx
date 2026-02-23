@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {useShoppingStore} from "@/features/recipes/store";
 import {DarkModeToggle} from "@/components/ui/DarkModeToggle";
 import {FaPlus, FaShoppingCart, FaBars} from "react-icons/fa";
+import logo from "@/assets/images/logo.ico";
 
 export const Header = () => {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ export const Header = () => {
                 onClick={() => navigate("/")}
             >
                 <img
-                    src="/assets/images/logo.ico"
+                    src={logo}
                     alt="Recipe Box Logo"
                     className="w-12 h-12 rounded-full logo-theme-aware"
                     style={{
