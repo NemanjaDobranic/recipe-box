@@ -1,5 +1,6 @@
 import { ToastContext } from "@/context/ToastContext";
 import { useState, type ReactNode } from "react";
+import { FiCheckCircle } from "react-icons/fi";
 
 export type Toast = {
     id: string;
@@ -26,13 +27,26 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         <ToastContext.Provider value={{ showToast }}>
             {children}
 
-            <div className="fixed bottom-5 right-5 space-y-2 z-50">
+            {/* Toast container */}
+            <div className="fixed bottom-5 right-5 flex flex-col space-y-3 z-50">
                 {toasts.map((toast) => (
                     <div
                         key={toast.id}
-                        className="bg-olive text-white px-4 py-3 rounded-lg shadow-lg animate-slide-in"
+                        className="
+                            bg-surface
+                            backdrop-blur-sm
+                            rounded-xl
+                            shadow-md
+                            px-4 py-3
+                            flex items-center gap-3
+                            font-body text-primary
+                            animate-slide-in
+                            min-w-[200px] max-w-xs
+                        "
                     >
-                        {toast.message}
+                        {/* Optional icon */}
+                        <FiCheckCircle className="text-accent text-lg" />
+                        <span>{toast.message}</span>
                     </div>
                 ))}
             </div>
