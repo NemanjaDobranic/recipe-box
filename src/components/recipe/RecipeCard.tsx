@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {useRecipeStore} from "@/features/recipes/store";
+import {useRecipeStore, useShoppingStore} from "@/features/recipes/store";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import type {Recipe} from "@/features/recipes/types";
 import {useToast} from "@/context/useToast.ts";
@@ -17,12 +17,17 @@ interface RecipeCardProps {
 
 export default function RecipeCard({recipe, selected = false, onSelect}: RecipeCardProps) {
     const navigate = useNavigate();
+
     const deleteRecipe = useRecipeStore((s) => s.deleteRecipe);
-    const {showToast} = useToast();
+    const removeRecipeFromList = useShoppingStore((s) => s.removeRecipeFromList);
+
+    const { showToast } = useToast();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleDelete = () => {
+        removeRecipeFromList(recipe.id);
         deleteRecipe(recipe.id);
+
         showToast("Recipe deleted successfully");
         setIsModalOpen(false);
     };

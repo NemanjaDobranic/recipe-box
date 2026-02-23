@@ -20,11 +20,12 @@ interface ShoppingState {
     toggleRecipeSelection: (id: string) => void;
     generateShoppingList: (recipes: Recipe[]) => void;
     clearShoppingList: () => void;
+    removeRecipeFromList: (recipeId: string) => void;
 }
 
 export const useRecipeStore = create<RecipeState>()(
     persist(
-        (set, get) => ({
+        (set) => ({
             recipes: seedRecipes,
 
             addRecipe: (recipe) =>
@@ -61,53 +62,71 @@ export const useRecipeStore = create<RecipeState>()(
     )
 );
 
-export const useShoppingStore = create<ShoppingState>((set) => ({
-    selectedRecipes: [],
-    shoppingList: [],
 
-    setSelectedRecipes: (ids) => set({selectedRecipes: ids}),
+export const useShoppingStore = create<ShoppingState>()(
+    persist(
+        (set, get) => ({
+            selectedRecipes: [],
+            shoppingList: [],
 
-    toggleRecipeSelection: (recipeId: string) =>
-        set((state) => ({
-            selectedRecipes: state.selectedRecipes.includes(recipeId)
-                ? state.selectedRecipes.filter((id) => id !== recipeId)
-                : [...state.selectedRecipes, recipeId],
-        })),
+            setSelectedRecipes: (ids) => set({ selectedRecipes: ids }),
 
-    generateShoppingList: (recipes) => {
-        const aggregated: Record<string, Ingredient> = {};
+            toggleRecipeSelection: (recipeId: string) =>
+                set((state) => ({
+                    selectedRecipes: state.selectedRecipes.includes(recipeId)
+                        ? state.selectedRecipes.filter((id) => id !== recipeId)
+                        : [...state.selectedRecipes, recipeId],
+                })),
 
-        recipes.forEach((recipe) => {
-            recipe.ingredients.forEach((ing) => {
-                const category = inferCategory(ing.item);
-                const key = `${ing.item.toLowerCase()}|${ing.unit}|${category}`;
+            generateShoppingList: (recipes) => {
+                const aggregated: Record<string, Ingredient> = {};
 
-                if (aggregated[key]) {
-                    aggregated[key].quantity += ing.quantity;
-                } else {
-                    aggregated[key] = {...ing, checked: false, category};
-                }
-            });
-        });
+                recipes.forEach((recipe) => {
+                    recipe.ingredients.forEach((ing) => {
+                        const category = inferCategory(ing.item);
+                        const key = `${ing.item.toLowerCase()}|${ing.unit}|${category}`;
 
-        const shoppingList = Object.values(aggregated);
+                        if (aggregated[key]) {
+                            aggregated[key].quantity += ing.quantity;
+                        } else {
+                            aggregated[key] = { ...ing, checked: false, category };
+                        }
+                    });
+                });
 
-        shoppingList.sort((a, b) => {
-            const catA = inferCategory(a.item) ?? "Other";
-            const catB = inferCategory(b.item) ?? "Other";
-            if (catA !== catB) return catA.localeCompare(catB);
-            return a.item.localeCompare(b.item);
-        });
+                const shoppingList = Object.values(aggregated);
 
-        set({shoppingList});
-    },
+                shoppingList.sort((a, b) => {
+                    const catA = inferCategory(a.item) ?? "Other";
+                    const catB = inferCategory(b.item) ?? "Other";
+                    if (catA !== catB) return catA.localeCompare(catB);
+                    return a.item.localeCompare(b.item);
+                });
 
-    toggleItemChecked: (id) =>
-        set((state) => ({
-            shoppingList: state.shoppingList.map((item) =>
-                item.id === id ? {...item, checked: !item.checked} : item
-            ),
-        })),
+                set({ shoppingList });
+            },
 
-    clearShoppingList: () => set({shoppingList: [], selectedRecipes: []})
-}));
+            toggleItemChecked: (id) =>
+                set((state) => ({
+                    shoppingList: state.shoppingList.map((item) =>
+                        item.id === id ? { ...item, checked: !item.checked } : item
+                    ),
+                })),
+
+            clearShoppingList: () => set({ shoppingList: [], selectedRecipes: [] }),
+
+            removeRecipeFromList: (recipeId: string) => {
+                const selected = get().selectedRecipes;
+                const updatedSelected = selected.filter((id) => id !== recipeId);
+                set({ selectedRecipes: updatedSelected });
+
+                const allRecipes = useRecipeStore.getState().recipes;
+                const remainingRecipes = allRecipes.filter((r) => updatedSelected.includes(r.id));
+                get().generateShoppingList(remainingRecipes);
+            },
+        }),
+        {
+            name: "shopping-storage",
+        }
+    )
+);
