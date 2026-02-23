@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Recipe Box</title>
+    <script>
+      const repoBase = '/recipe-box';
+      const path = window.location.pathname.replace(repoBase, '');
+      window.location.href = repoBase + '/' + path + window.location.search + window.location.hash;
+    </script>
+  </head>
+  <body></body>
+</html>
