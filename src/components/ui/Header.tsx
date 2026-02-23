@@ -25,7 +25,7 @@ export const Header = () => {
                 <img
                     src="/assets/images/logo.ico"
                     alt="Recipe Box Logo"
-                    className="w-12 h-12 rounded-full"
+                    className="w-12 h-12 rounded-full logo-theme-aware"
                     style={{
                         border: "2px solid var(--color-surface)",
                     }}
