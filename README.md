@@ -5,6 +5,8 @@
 
 A mobile-first personal recipe management application built with **React 19 + Vite**, focused on polished UX, thoughtful interactions, and visual consistency.
 
+**Live Demo:** [https://nemanjadobranic.github.io/recipe-box/](https://nemanjadobranic.github.io/recipe-box/)
+
 This project emphasizes:
 
 *   Production-ready architecture
