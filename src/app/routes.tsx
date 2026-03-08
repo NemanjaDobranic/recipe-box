@@ -1,19 +1,45 @@
-import {Routes, Route, Navigate} from "react-router-dom";
+import {Navigate, createBrowserRouter} from "react-router-dom";
 import HomePage from "@/pages/HomePage";
 import RecipeDetailsPage from "@/pages/RecipeDetailsPage";
 import CreateRecipePage from "@/pages/CreateRecipePage";
 import EditRecipePage from "@/pages/EditRecipePage.tsx";
 import ShoppingListPage from "@/pages/ShopingListPage.tsx";
+import Layout from "@/app/Layout.tsx";
 
-export default function AppRoutes() {
-    return (
-        <Routes>
-            <Route path="/" element={<HomePage/>}/>
-            <Route path="/recipe/:id" element={<RecipeDetailsPage/>}/>
-            <Route path="/create" element={<CreateRecipePage/>}/>
-            <Route path="/edit/:id" element={<EditRecipePage/>}/>
-            <Route path="shopping-list" element={<ShoppingListPage/>}/>
-            <Route path="*" element={<Navigate to="/" replace/>}/>
-        </Routes>
-    );
-}
+const isGhPages = import.meta.env.GH_PAGES === "true";
+
+export const router = createBrowserRouter([
+        {
+            element: <Layout/>,
+            children: [
+                {
+                    path: "/",
+                    element: <HomePage/>,
+                },
+                {
+                    path: "/recipe/:id",
+                    element: <RecipeDetailsPage/>,
+                },
+                {
+                    path: "/create",
+                    element: <CreateRecipePage/>,
+                },
+                {
+                    path: "/edit/:id",
+                    element: <EditRecipePage/>,
+                },
+                {
+                    path: "shopping-list",
+                    element: <ShoppingListPage/>,
+                },
+                {
+                    path: "*",
+                    element: <Navigate to="/" replace/>,
+                },
+            ]
+        }
+    ],
+    {
+        basename: isGhPages ? "/recipe-box/" : "/",
+    }
+);
